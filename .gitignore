@@ -1,10 +1,37 @@
+# Dependencies and generated mini-program packages
 node_modules/
 miniprogram_npm/
+
+# Generated previews, screenshots and verification output
 artifacts/
+/Make-Again-预览.html
+/Make-Again-登录页预览.html
+coverage/
+.nyc_output/
+.cache/
+
+# Local environment and WeChat developer tool settings
 .env
 .env.*
 !.env.example
 project.private.config.json
+
+# Logs and temporary files
 *.log
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Python tooling caches and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local IDE state and operating system files
+.idea/
 .DS_Store
 Thumbs.db
+Desktop.ini
