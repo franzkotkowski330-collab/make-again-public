@@ -5,6 +5,7 @@ License: assets/fonts/LICENSE-WenKai.txt (SIL OFL 1.1).
 Run with fonttools and brotli available on PYTHONPATH; source TTF stays in artifacts.
 """
 import base64
+import re
 import subprocess
 from pathlib import Path
 from fontTools import subset
@@ -16,7 +17,10 @@ phrase += subprocess.check_output(
     ["node", "-e", "process.stdout.write(require('./utils/constants').AUTHOR_LETTER.paragraphs.join('') + require('./utils/constants').AUTHOR_LETTER.title)"],
     cwd=root, encoding="utf-8",
 )
-phrase += "来自主创团队给你的一封信亲爱的你开始返回每一份遗憾都有归处每一段离别都能被温柔安放。Make Again · A Letter✦✧✳"
+# Read the native labels too, so button text changes keep all their WenKai glyphs.
+wxml = (root / "components/author-letter/author-letter.wxml").read_text(encoding="utf-8")
+phrase += "".join(re.findall(r">([^<>]+)<", wxml))
+phrase = re.sub(r"\{\{.*?\}\}", "", phrase)
 font = TTFont(root / "artifacts/LXGWWenKai-Regular.ttf")
 missing = [char for char in set(phrase) if not char.isspace() and ord(char) not in font.getBestCmap()]
 # Decorative symbols may use the system fallback; all text must have WenKai glyphs.

@@ -10,7 +10,7 @@ require('../components/author-letter/author-letter')
 delete global.Component
 const data = component.data
 let letter = read('components/author-letter/author-letter.wxml')
-letter = letter.replace(/class="letter-overlay[^"\n]*"/, 'class="letter-overlay ml-root" id="letterOverlay" role="dialog" aria-modal="true" aria-labelledby="letterHeading"')
+letter = letter.replace(/class="letter-overlay[^"\n]*"/, 'class="letter-overlay ml-root" id="letterOverlay" role="dialog" aria-modal="true" aria-label="主创的信"')
 for (const [collection, tag, className] of [['stars', 'view', 'ml-star'], ['shards', 'view', 'ml-seal-shard'], ['petals', 'view', 'ml-burst-piece']]) {
   const expression = new RegExp(`<${tag} wx:for="\\{\\{${collection}\\}\\}"[^>]*><\\/${tag}>`)
   letter = letter.replace(expression, data[collection].map(item => `<div class="${className}" style="${escape(item.style)}" aria-hidden="true"></div>`).join(''))
@@ -18,7 +18,6 @@ for (const [collection, tag, className] of [['stars', 'view', 'ml-star'], ['shar
 letter = letter.replace(/<text wx:for="\{\{letter.paragraphs\}\}"[^>]*>\{\{item\}\}<\/text>/, data.letter.paragraphs.map(text => `<p class="letter-paragraph">${escape(text)}</p>`).join('\n'))
 letter = letter.replace(/wx:if="\{\{!reading\}\}"/g, 'data-animation-only')
 letter = letter.replace(/<view wx:if="\{\{reading\}\}" class="letter-paper">/, '<div class="letter-paper" id="letterPaper" hidden>')
-letter = letter.replace(/class="letter-heading"/, 'class="letter-heading" id="letterHeading"')
 letter = letter.replace(/class="letter-scroll"/, 'class="letter-scroll" tabindex="0" aria-label="信件正文"')
 letter = letter.replace(/class="continue-letter"/, 'class="continue-letter" id="beginButton"')
 letter = letter.replace(/class="back-letter"/, 'class="back-letter" id="backButton"')

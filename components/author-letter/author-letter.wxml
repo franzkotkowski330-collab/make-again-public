@@ -8,7 +8,7 @@
       <view class="ml-letter-spin">
         <view class="ml-paper-bottom"><view class="ml-paper-innerline"></view><text class="ml-paper-copy">每一份遗憾都有归处，</text><text class="ml-paper-copy">每一段离别都能被温柔安放。</text><text class="ml-paper-signature">Make Again</text></view>
         <view class="ml-paper-top">
-          <view class="ml-paper-topfront"><view class="ml-paper-innerline"></view><view class="ml-paper-decoration">✦</view></view>
+          <view class="ml-paper-topfront"><view class="ml-paper-innerline"></view><text class="ml-paper-small">来自主创团队</text><text class="ml-paper-title">给你的一封信</text><view class="ml-paper-decoration">✦</view></view>
           <view class="ml-paper-topback"><text class="ml-paper-back-emblem">✳</text><text class="ml-paper-back-note">Make Again</text></view>
         </view>
       </view>
@@ -27,7 +27,6 @@
     <text class="ml-intro-sub">TAP THE SEAL TO OPEN</text>
   </view>
   <view wx:if="{{reading}}" class="letter-paper">
-    <view class="letter-header"><text class="letter-eyebrow">来自主创团队</text><text class="letter-heading">给你的一封信</text><view class="letter-divider">✦</view></view>
     <scroll-view class="letter-scroll" scroll-y enhanced show-scrollbar="{{false}}">
       <view class="letter-body">
         <text class="letter-salutation">亲爱的你：</text>
