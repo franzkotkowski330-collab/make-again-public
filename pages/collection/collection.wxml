@@ -1,0 +1,8 @@
+<view class="screen collection-screen">
+  <t-tabs class="collection-tabs" value="{{active}}" theme="line" split="{{false}}" bind:change="selectTab"><t-tab-panel wx:for="{{tabs}}" wx:key="key" label="{{item.label}}" value="{{item.key}}"/></t-tabs>
+  <view wx:if="{{error}}" class="error spaced">{{error}}</view>
+  <view wx:if="{{active === 'letters'}}" class="surface letter-list {{letterPlaced ? 'letter-placed' : ''}}"><t-cell class="letter-card" wx:for="{{items}}" wx:key="id" title="主创的信" description="{{item.subtitle}}" left-icon="mail" arrow hover bind:click="readLetter"/></view>
+  <text wx:if="{{letterPlaced && active === 'letters'}}" class="placed-note">信已放好，随时可以回来读。</text>
+  <view wx:else class="empty-state"><t-empty icon="bookmark" description="暂无收藏"/></view>
+</view>
+<view wx:if="{{letterArriving}}" class="letter-arrival"><view class="arriving-paper" animation="{{arrivalAnimation}}"><text class="arriving-eyebrow">来自主创团队</text><text class="arriving-title">给你的一封信</text><text class="arriving-emblem">✦</text><text class="arriving-copy">每一次结束，都是新的开始。</text><text class="arriving-sign">Make Again 主创团队</text></view></view>

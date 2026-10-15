@@ -1,0 +1,41 @@
+<view class="letter-overlay ml-root {{opening ? 'ml-open' : ''}} {{reading ? 'is-reading' : ''}} {{closing ? 'is-closing' : ''}}" catchtouchmove="preventTouchMove">
+  <view class="ml-halo"></view>
+  <view wx:for="{{stars}}" wx:key="id" class="ml-star" style="{{item.style}}"></view>
+  <view wx:if="{{!reading}}" class="ml-topline"><view class="ml-topline-rule"></view><text class="ml-topline-label">Make Again · A Letter</text><view class="ml-topline-rule"></view></view>
+  <view wx:if="{{!reading}}" class="ml-scene">
+    <view class="ml-shadow"></view>
+    <view class="ml-letter-rig">
+      <view class="ml-letter-spin">
+        <view class="ml-paper-bottom"><view class="ml-paper-innerline"></view><text class="ml-paper-copy">每一份遗憾都有归处，</text><text class="ml-paper-copy">每一段离别都能被温柔安放。</text><text class="ml-paper-signature">Make Again</text></view>
+        <view class="ml-paper-top">
+          <view class="ml-paper-topfront"><view class="ml-paper-innerline"></view><view class="ml-paper-decoration">✦</view></view>
+          <view class="ml-paper-topback"><text class="ml-paper-back-emblem">✳</text><text class="ml-paper-back-note">Make Again</text></view>
+        </view>
+      </view>
+    </view>
+    <view class="ml-envelope" bindtap="openLetter">
+      <view class="ml-env-back"></view><view class="ml-env-inside"></view>
+      <view class="ml-env-left"></view><view class="ml-env-right"></view><view class="ml-env-bottom"></view>
+      <view class="ml-env-flap"><view class="ml-env-flap-front"><view class="ml-flap-stitch"></view></view><view class="ml-env-flap-back"></view></view>
+      <view class="ml-seal"><text class="ml-seal-symbol">✧</text></view>
+      <view class="ml-seal-shards"><view wx:for="{{shards}}" wx:key="id" class="ml-seal-shard" style="{{item.style}}"></view></view>
+    </view>
+    <view class="ml-petal-burst"><view wx:for="{{petals}}" wx:key="id" class="ml-burst-piece" style="{{item.style}}"></view></view>
+  </view>
+  <view wx:if="{{!reading}}" class="ml-intro">
+    <text class="ml-intro-main">轻点封口的火漆，拆开这封信</text>
+    <text class="ml-intro-sub">TAP THE SEAL TO OPEN</text>
+  </view>
+  <view wx:if="{{reading}}" class="letter-paper">
+    <view class="letter-header"><text class="letter-eyebrow">来自主创团队</text><text class="letter-heading">给你的一封信</text><view class="letter-divider">✦</view></view>
+    <scroll-view class="letter-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="letter-body">
+        <text class="letter-salutation">亲爱的你：</text>
+        <text wx:for="{{letter.paragraphs}}" wx:key="index" class="letter-paragraph" selectable>{{item}}</text>
+        <text class="letter-sign">Make Again 主创团队</text>
+        <button wx:if="{{first}}" class="continue-letter" bindtap="begin" disabled="{{saving || closing}}" loading="{{saving}}">开始旅程</button>
+        <button wx:else class="back-letter" bindtap="goBack">返回</button>
+      </view>
+    </scroll-view>
+  </view>
+</view>

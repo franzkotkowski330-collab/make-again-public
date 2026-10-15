@@ -1,0 +1,10 @@
+<view class="screen home-screen">
+  <view class="home-greeting"><text class="home-kicker">此刻</text><text class="home-title">一切，都可以慢慢来。</text></view>
+  <view wx:if="{{loadError}}" class="error"><text>{{loadError}}</text><t-button variant="text" size="small" bind:tap="retry">重试</t-button></view>
+  <view class="home-entry"><t-button class="hero-cta" theme="primary" shape="round" size="large" block bind:tap="startChat">写下此刻</t-button></view>
+  <text wx:if="{{hasGuest}}" class="section-label">我的旅程</text>
+  <view wx:if="{{hasGuest}}" class="surface journey-card"><t-cell class="profile-link" title="{{journey.profile.relationship.value || '当前旅程'}}" description="{{journey.profile.lossType.declined || lossLabel === '暂不选择' ? '' : lossLabel}}" note="管理" arrow hover bind:click="editProfile"/></view>
+  <text class="section-label">留给自己的</text>
+  <view class="surface"><t-cell title="主创的信" left-icon="mail" arrow hover bind:click="readLetter"/></view>
+</view>
+<author-letter wx:if="{{showFirstLetter}}" id="first-letter" first="{{true}}" saving="{{savingLetter}}" bind:begin="beginLetter" bind:archive="archiveLetter" bind:cancel="cancelLetter"/>

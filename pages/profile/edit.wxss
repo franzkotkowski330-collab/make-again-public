@@ -1,0 +1,14 @@
+.edit-screen { padding-top: 24rpx; }
+.edit-intro { display: block; color: #A297AA; font-size: 24rpx; padding: 8rpx 4rpx 20rpx; }
+.form-section { padding: 28rpx 28rpx 14rpx; margin-bottom: 20rpx; }
+.field-title { display: block; color: #615568; font-size: 27rpx; }
+.form-input, .form-textarea, .picker-input { width: 100%; margin-top: 18rpx; background: #F8F6FA; border-radius: 16rpx; padding: 20rpx; color: #796986; font-size: 26rpx; }
+.form-input { height: 84rpx; }
+.form-textarea { height: 160rpx; line-height: 1.8; }
+.picker-input { display: flex; align-items: center; justify-content: space-between; min-height: 84rpx; }
+.form-placeholder { color: #B9ACC2; }
+.disabled { opacity: .45; }
+.decline-row { display: flex; align-items: center; justify-content: space-between; margin-top: 14rpx; color: #ABA0B2; font-size: 23rpx; }
+.decline-row switch { transform: scale(.7); transform-origin: right center; }
+.edit-note { display: block; margin: 12rpx 6rpx 24rpx; color: #AAA0B1; font-size: 22rpx; }
+.cancel-profile { display: block; margin-top: 12rpx; }

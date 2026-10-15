@@ -1,0 +1,82 @@
+const assert = require('node:assert/strict')
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto')
+const automator = require('miniprogram-automator')
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
+async function waitRoute(mini, route) {
+  for (let i = 0; i < 24; i++) { const p = await mini.currentPage(); if (p.path === route) return p; await wait(250) }
+  throw new Error('Expected route ' + route + ', got ' + (await mini.currentPage()).path)
+}
+const results = []
+const pass = text => { results.push(text); console.log('PASS:', text) }
+;(async () => {
+  const before = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../artifacts/ui-core-before.json'), 'utf8'))
+  for (const [file, hash] of Object.entries(before)) assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.resolve(__dirname, '..', file))).digest('hex'), hash, file + ' changed')
+  pass('存储、服务、建档定义、聊天与字段保存控制器保持原样')
+  const mini = await automator.connect({ wsEndpoint: 'ws://127.0.0.1:9420' })
+  const cache = async () => (await mini.evaluate(function () { return { value: wx.getStorageSync('make_again_local_v1') } })).value
+  const original = await cache()
+  const exceptions = []
+  mini.on('exception', event => exceptions.push(event))
+  try {
+    let page = await mini.currentPage()
+    if (page.path !== 'pages/login/login') page = await mini.navigateTo('/pages/login/login')
+    const logo = await page.$('.brand-name')
+    assert.match(await logo.style('font-family'), /MAParisienne/)
+    assert.equal(await page.data('animate'), true)
+    assert.match(await (await page.$('.brand-word')).style('animation-name'), /brand-glimmer/)
+    pass('登录页实际使用 Parisienne 字体与柔光扫过动画')
+    const login = await page.$('.wechat-login')
+    console.log('TDesign button block:', await login.data('block'))
+    await login.tap(); await wait(300)
+    assert.equal(await page.data('loginNotice'), true)
+    await mini.evaluate(function () { getCurrentPages()[getCurrentPages().length - 1].closeNotice(); return { ok: true } })
+    assert.equal(await page.data('loginNotice'), false)
+    pass('微信登录入口展示真实未开通状态，不伪造登录')
+    await (await page.$('.guest-entry')).tap(); await wait(800)
+    page = await mini.currentPage()
+    assert.ok(['pages/home/home', 'pages/letter/letter'].includes(page.path))
+    pass('游客入口接续原有首次信件／首页流程')
+    await mini.switchTab('/pages/collection/collection')
+    page = await waitRoute(mini, 'pages/collection/collection')
+    await page.waitFor('.collection-tabs')
+    const tabs = await page.$('.collection-tabs')
+    const labels = await tabs.$$('.t-tabs__item')
+    assert.equal(labels.length, 4)
+    for (const [index, key] of ['letters', 'items', 'photos', 'memories'].entries()) {
+      await labels[index].tap(); await wait(250)
+      assert.equal(await page.data('active'), key)
+    }
+    pass('TDesign 四个收藏选项卡实际切换')
+    await mini.switchTab('/pages/profile/profile')
+    page = await waitRoute(mini, 'pages/profile/profile')
+    await page.waitFor('.privacy-row')
+    const privacy = await page.$('.privacy-row')
+    await (await privacy.$('.t-cell')).tap(); await wait(800)
+    assert.equal((await mini.currentPage()).path, 'pages/privacy/privacy')
+    page = await mini.currentPage()
+    await mini.pageScrollTo(99999); await wait(350)
+    await (await (await page.$('.back-privacy')).$('button')).tap()
+    await waitRoute(mini, 'pages/profile/profile')
+    pass('TDesign 列表进入隐私说明并返回原页面')
+    await mini.switchTab('/pages/chat/chat')
+    page = await waitRoute(mini, 'pages/chat/chat')
+    if (original && original.guest) {
+      await page.waitFor('.input-dock')
+      const root = await page.$('.chat-screen'), dock = await page.$('.input-dock')
+      const rootOffset = await root.offset(), dockOffset = await dock.offset()
+      const rootSize = await root.size(), dockSize = await dock.size()
+      assert.ok(Number(dockOffset.top) + Number(dockSize.height) <= Number(rootOffset.top) + Number(rootSize.height) + 1)
+      pass('从全屏登录页进入聊天，输入区位于实际视口内')
+    } else {
+      await page.waitFor('.consent-scroll')
+      assert.equal(await page.$('.chat-input'), null)
+      pass('未同意用户只显示说明，不出现倾诉输入区')
+    }
+    assert.equal(await page.data('hasGuest'), !!(original && original.guest))
+    assert.deepEqual(await cache(), original)
+    pass('页面切换保留现有游客与历史缓存，没有写入测试倾诉')
+    assert.equal(exceptions.length, 0)
+    pass('所测页面无运行时异常')
+    fs.writeFileSync(path.resolve(__dirname, '../artifacts/ui/verification.json'), JSON.stringify({ passed: results, runtimeExceptions: 0, businessCodeUnchanged: true, existingDataUnchanged: true, realDeviceTested: false }, null, 2))
+  } finally { mini.disconnect() }
+})().catch(error => { console.error(error); process.exitCode = 1 })

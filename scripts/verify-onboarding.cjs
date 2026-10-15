@@ -1,0 +1,133 @@
+const assert = require('node:assert/strict')
+const fs = require('node:fs')
+const path = require('node:path')
+const automator = require('miniprogram-automator')
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
+const output = path.resolve(__dirname, '../artifacts/ui/onboarding')
+const checks = []
+const pass = label => { checks.push(label); console.log('PASS:', label) }
+async function until(check, message, timeout = 10000) {
+  const started = Date.now()
+  while (Date.now() - started < timeout) { const value = await check(); if (value) return value; await wait(150) }
+  throw new Error(message)
+}
+;(async () => {
+  fs.mkdirSync(output, { recursive: true })
+  const mini = await automator.connect({ wsEndpoint: 'ws://127.0.0.1:9420' })
+  const original = await mini.evaluate(() => wx.getStorageSync('make_again_local_v1'))
+  const backup = path.join(output, 'cache-backup.json')
+  fs.writeFileSync(backup, JSON.stringify({ value: original }))
+  const exceptions = []
+  mini.on('exception', error => exceptions.push(error))
+  try {
+    console.log('Checking a fresh entry; simulator cache backed up.')
+    await mini.evaluate(() => { wx.removeStorageSync('make_again_local_v1'); getApp().globalData.pendingLetterArrival = false; return { ok: true } })
+    await mini.callWxMethod('reLaunch', { url: '/pages/login/login' })
+    const splash = fs.readFileSync(path.resolve(__dirname, '../pages/login/login.wxml'), 'utf8')
+    assert.match(splash, /wechat-login/)
+    assert.doesNotMatch(splash, /guest-entry|游客登录|bindanimationend/)
+    assert.match(fs.readFileSync(path.resolve(__dirname, '../pages/login/login.wxss'), 'utf8'), /MAParisienne/)
+    await wait(2400)
+    let loginPage = await mini.currentPage()
+    assert.equal(loginPage.path, 'pages/login/login')
+    assert.equal(await (await loginPage.$('.wechat-login')).text(), '微信登录')
+    // Deterministic UI check only; does not establish a real WeChat account session.
+    await mini.mockWxMethod('login', { code: 'ui-verification-code' })
+    try { await (await loginPage.$('.wechat-login')).tap() }
+    finally { await mini.restoreWxMethod('login') }
+    // Avoid asking the IDE for a page handle during its native route transition.
+    await wait(4500)
+    let page = await until(async () => { const p = await mini.currentPage(); return p.path === 'pages/home/home' && p }, '点击微信登录没有进入首页')
+    assert.equal(await page.data('showFirstLetter'), true)
+    pass('登录页动效后停留，仅保留底部微信登录；点击获取凭证后进入首页并弹出信封（凭证为测试桩）')
+    let letter = await until(() => page.$('#first-letter'), '信封组件没有出现')
+    await wait(450)
+    assert.equal(await letter.data('opening'), true)
+    await until(() => mini.evaluate(() => {
+      const component = getCurrentPages().slice(-1)[0].selectComponent('#first-letter')
+      return !!(component && component.data.reading)
+    }), '拆信动画没有展开正文')
+    await wait(500)
+    letter = await page.$('#first-letter')
+    const paragraph = await letter.$('.letter-paragraph')
+    assert.match(await paragraph.style('font-family'), /MAMottoWenKai/)
+    const letterContent = await mini.evaluate(() => {
+      const component = getCurrentPages().slice(-1)[0].selectComponent('#first-letter')
+      return { count: component.data.letter.paragraphs.length }
+    })
+    assert.equal(letterContent.count, require('../utils/constants').AUTHOR_LETTER.paragraphs.length)
+    const scroll = await letter.$('.letter-scroll')
+    assert.ok(Number((await scroll.size()).height) > 150)
+    await scroll.scrollTo(0, 99999)
+    await wait(250)
+    const begin = await letter.$('.continue-letter')
+    assert.equal(await begin.text(), '开始旅程')
+    const buttonOffset = await begin.offset(), paperOffset = await (await letter.$('.letter-paper')).offset(), paperSize = await (await letter.$('.letter-paper')).size()
+    assert.ok(Number(buttonOffset.top) < Number(paperOffset.top) + Number(paperSize.height), '开始按钮应能在信纸滚动区内看到')
+    pass('指定拆信动效自动播放，正文使用开场楷体，完整内容可滚动到“开始”')
+    await begin.tap()
+    await wait(2000)
+    page = await until(async () => { const p = await mini.currentPage(); return p.path === 'pages/collection/collection' && p }, '开始后没有进入收藏')
+    assert.equal(await page.data('active'), 'letters')
+    await until(() => page.data('letterPlaced'), '信件没有收缩放好')
+    assert.ok((await page.data('arrivalAnimation')).actions.length > 0)
+    const saved = await mini.evaluate(() => wx.getStorageSync('make_again_local_v1'))
+    assert.equal(saved.letterRead, true)
+    assert.equal(saved.guest, null)
+    assert.equal(saved.consent, null)
+    pass('“开始”进入收藏信件栏，信纸收缩落入卡片并记录已读')
+    const tabs = await page.$('.collection-tabs')
+    const labels = await tabs.$$('.t-tabs__item')
+    for (const [index, key] of ['letters', 'items', 'photos', 'memories'].entries()) {
+      await labels[index].tap(); await wait(180)
+      assert.equal(await page.data('active'), key)
+    }
+    // Arrival must also work when collection already exists on a different tab.
+    await mini.evaluate(() => { getApp().globalData.pendingLetterArrival = true; return { ok: true } })
+    await mini.switchTab('/pages/home/home')
+    await mini.switchTab('/pages/collection/collection')
+    page = await mini.currentPage()
+    assert.equal(await page.data('active'), 'letters')
+    // switchTab() in the automator waits three seconds; the landing hint may
+    // already be gone, so verify the completed animation instead of that hint.
+    await until(async () => !(await page.data('letterArriving')), '已有收藏页面没有完成收信')
+    assert.ok((await page.data('arrivalAnimation')).actions.length > 0)
+    pass('收藏四栏正常切换，已打开的收藏页也会切回信件并接住来信')
+    const card = await page.$('.letter-card')
+    await (await card.$('.t-cell')).tap()
+    await wait(750)
+    page = await until(async () => { const p = await mini.currentPage(); return p.path === 'pages/letter/letter' && p }, '收藏信件无法重读')
+    letter = await until(() => page.$('#author-letter'), '重读组件未出现')
+    await until(() => mini.evaluate(() => {
+      const component = getCurrentPages().slice(-1)[0].selectComponent('#author-letter')
+      return !!(component && component.data.reading)
+    }), '重读未展开')
+    await wait(500)
+    letter = await page.$('#author-letter')
+    assert.equal(await letter.$('.continue-letter'), null)
+    const back = await letter.$('.back-letter')
+    await (await letter.$('.letter-scroll')).scrollTo(0, 99999)
+    await back.tap()
+    await wait(750)
+    await until(async () => (await mini.currentPage()).path === 'pages/collection/collection', '重读返回失败')
+    pass('收藏中可重读完整信件并返回')
+    page = await mini.switchTab('/pages/home/home')
+    assert.equal(await page.data('showFirstLetter'), false)
+    page = await mini.switchTab('/pages/profile/profile')
+    assert.equal(await (await page.$('.identity-name')).text(), '游客')
+    const login = await page.$('.wechat-login')
+    await (await login.$('.t-cell')).tap()
+    await until(() => page.data('loginNotice'), '我的页面微信登录入口没有响应')
+    assert.equal((await mini.currentPage()).path, 'pages/profile/profile')
+    pass('已读后不再自动弹信；微信登录入口在“我的”并提示当前账号服务状态')
+    assert.equal(exceptions.length, 0, JSON.stringify(exceptions))
+    fs.writeFileSync(path.join(output, 'verification.json'), JSON.stringify({ passed: checks, runtimeExceptions: exceptions, realDeviceTested: false }, null, 2))
+  } finally {
+    try {
+      await mini.evaluate(value => { if (value === '') wx.removeStorageSync('make_again_local_v1'); else wx.setStorageSync('make_again_local_v1', value); getApp().globalData.pendingLetterArrival = false; return { ok: true } }, original)
+      assert.deepEqual(await mini.evaluate(() => wx.getStorageSync('make_again_local_v1')), original)
+      await mini.reLaunch('/pages/login/login')
+      await until(async () => (await mini.currentPage()).path === 'pages/login/login', '测试后未恢复登录页')
+    } finally { mini.disconnect() }
+  }
+})().catch(error => { console.error(error); process.exitCode = 1 })

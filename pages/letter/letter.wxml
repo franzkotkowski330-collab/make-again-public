@@ -1,0 +1,1 @@
+<author-letter id="author-letter" first="{{first}}" saving="{{saving}}" bind:begin="continueJourney" bind:archive="archiveLetter" bind:cancel="cancelArchive" bind:back="goBack"/>

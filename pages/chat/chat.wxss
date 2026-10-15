@@ -1,0 +1,25 @@
+page { height: 100%; overflow: hidden; }
+.chat-screen { display: flex; flex-direction: column; overflow: hidden; background: transparent; }
+.consent-scroll { flex: 1; height: 0; }
+.consent-content { padding: 106rpx 48rpx 40rpx; }
+.consent-title { display: block; font-size: 42rpx; font-weight: 500; color: #4F4558; }
+.consent-summary { display: block; font-size: 28rpx; line-height: 2; color: #8F8598; margin-top: 34rpx; }
+.privacy-link { display: block; margin: 30rpx 0; }
+.consent-actions { margin-top: 66rpx; }
+.decline-button { display: block; margin-top: 16rpx; }
+.chat-top { flex-shrink: 0; padding: 24rpx 36rpx; display: flex; justify-content: space-between; align-items: center; border-bottom: 1rpx solid #F0EDF4; }
+.chat-name { font-size: 28rpx; color: #6F647A; }
+.chat-status { color: #ABA2B4; font-size: 21rpx; }
+.chat-error { margin: 16rpx 28rpx; flex-shrink: 0; }
+.message-scroll { flex: 1; height: 0; min-height: 0; }
+.message-content { padding: 24rpx 32rpx 0; }
+.chat-empty { padding: 176rpx 20rpx; text-align: center; color: #A59AAA; font-size: 28rpx; }
+.message-group { display: flex; flex-direction: column; align-items: flex-end; margin-bottom: 30rpx; }
+.message-time { align-self: center; font-size: 20rpx; color: #B0A7B9; margin: 8rpx 0 24rpx; }
+.user-message { max-width: 87%; background: #EEE9F4; border-radius: 24rpx 6rpx 24rpx 24rpx; padding: 22rpx 26rpx; color: #5E5169; font-size: 28rpx; line-height: 1.85; word-break: break-all; white-space: pre-wrap; }
+.scroll-tail { height: 20rpx; }
+.input-dock { flex-shrink: 0; background: #FFF; border-top: 1rpx solid #F0EDF4; padding: 20rpx 28rpx 16rpx; }
+.input-row { display: flex; gap: 18rpx; align-items: flex-end; }
+.chat-input { flex: 1; min-width: 0; width: auto; min-height: 76rpx; max-height: 200rpx; padding: 20rpx 22rpx; background: #F6F3F8; border-radius: 20rpx; color: #5F5269; font-size: 27rpx; line-height: 36rpx; }
+.input-placeholder { color: #B4A9BD; }
+.send-button { flex-shrink: 0; --td-button-medium-height: 76rpx; --td-button-medium-font: 500 25rpx / 36rpx sans-serif; }

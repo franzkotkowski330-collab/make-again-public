@@ -1,0 +1,37 @@
+{
+  "setting": {
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "uglifyFileName": false,
+    "enhance": true,
+    "packNpmManually": true,
+    "packNpmRelationList": [{ "packageJsonPath": "./package.json", "miniprogramNpmDistDir": "./" }],
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "useCompilerPlugins": false
+  },
+  "compileType": "miniprogram",
+  "projectname": "Make Again · 原生本地首阶段",
+  "simulatorPluginLibVersion": {},
+  "packOptions": {
+    "ignore": [
+      { "type": "folder", "value": "node_modules" },
+      { "type": "folder", "value": "tests" },
+      { "type": "folder", "value": "scripts" },
+      { "type": "folder", "value": "artifacts" },
+      { "type": "folder", "value": "docs" },
+      { "type": "file", "value": "package.json" },
+      { "type": "file", "value": "package-lock.json" },
+      { "type": "file", "value": "Make_Again_Hackathon_MVP_PRD_v1.md" },
+      { "type": "file", "value": "Make-Again-预览.html" },
+      { "type": "file", "value": "Make-Again-登录页预览.html" }
+    ],
+    "include": []
+  },
+  "appid": "wx0872b60ff03a1adc",
+  "editorSetting": {}
+}

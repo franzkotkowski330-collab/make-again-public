@@ -1,0 +1,17 @@
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto')
+const html = fs.readFileSync('D:/my-ui-library/Make Again 字体实验室/index.html', 'utf8')
+const font = html.match(/@font-face\{font-family:'Parisienne'[^}]+\}/)
+if (!font) throw new Error('Parisienne was not found')
+const encoded = font[0].match(/base64,([^\)]+)/)[1]
+const assets = path.resolve(__dirname, '../assets/fonts')
+fs.mkdirSync(assets, { recursive: true })
+fs.writeFileSync(path.join(assets, 'Parisienne.woff2'), Buffer.from(encoded, 'base64'))
+fs.writeFileSync(path.join(assets, 'brand.wxss'), font[0].replace("'Parisienne'", "'MAParisienne'") + '\n')
+const license = html.match(/===== Parisienne =====([\s\S]*?)(?===== |-->)/)
+if (!license) throw new Error('Parisienne license was not found')
+fs.writeFileSync(path.join(assets, 'LICENSE-Parisienne.txt'), 'Parisienne — Make Again typography lab\n' + license[1])
+const files = ['utils/storage.js', 'utils/local-service.js', 'utils/service.js', 'utils/constants.js', 'pages/chat/chat.js', 'pages/profile/edit.js']
+const hashes = Object.fromEntries(files.map(file => [file, crypto.createHash('sha256').update(fs.readFileSync(path.resolve(__dirname, '..', file))).digest('hex')]))
+fs.mkdirSync(path.resolve(__dirname, '../artifacts'), { recursive: true })
+if (!fs.existsSync(path.resolve(__dirname, '../artifacts/ui-core-before.json'))) fs.writeFileSync(path.resolve(__dirname, '../artifacts/ui-core-before.json'), JSON.stringify(hashes, null, 2))
+console.log('Extracted the supplied Parisienne font and license; no remote font request is needed.')

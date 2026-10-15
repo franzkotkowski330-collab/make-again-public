@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Make Again · 登录页预览</title>
+<style>
+/* EMBEDDED_STYLES */
+*{box-sizing:border-box} [hidden]{display:none!important}
+body{margin:0;background:#EDF1F9;color:#504557;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif}
+button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-visible{outline:2px solid #81728F;outline-offset:3px}
+.preview-toolbar{width:min(100% - 28px,480px);margin:18px auto 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.preview-label{font-size:13px;color:#81728F}.preview-tools{display:flex;gap:6px}.preview-tools button{border:1px solid #D8D0E1;border-radius:18px;padding:7px 11px;background:#FBFBFD;color:#756A7E;font-size:12px}
+.ma-phone{--ma-rpx:calc(min(100vw,390px) / 750);position:relative;width:min(100%,390px);height:min(844px,calc(100dvh - 100px));min-height:500px;margin:0 auto 22px;background:radial-gradient(ellipse 58% 44% at 50% 50%,rgba(188,215,250,.45),transparent 70%),radial-gradient(ellipse 52% 40% at 50% 50%,rgba(250,220,234,.4),transparent 70%),radial-gradient(ellipse 48% 38% at 50% 50%,rgba(222,201,250,.32),transparent 70%),#F8FAFF;background-repeat:no-repeat;background-size:220% 220%,200% 200%,190% 190%,auto;animation:ma-bg-flow 6s ease-in-out infinite alternate;border-radius:30px;overflow:hidden;box-shadow:0 14px 55px #81728F1A;isolation:isolate}
+@keyframes ma-bg-flow{0%{background-position:62% 18%,30% 68%,66% 88%,center}50%{background-position:34% 42%,70% 44%,38% 60%,center}100%{background-position:56% 72%,62% 30%,70% 72%,center}}
+.ma-status{position:relative;z-index:120;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-size:11px;background:transparent;color:#504557}.ma-status-icons{letter-spacing:4px;font-size:10px}
+.ma-header{height:44px;position:relative;display:flex;justify-content:center;align-items:center;background:transparent;font-size:13px;color:#504557;z-index:120}
+.ma-capsule{position:absolute;right:12px;top:9px;width:77px;height:27px;border-radius:18px;border:1px solid #EBE9F0;display:flex;justify-content:space-around;align-items:center;background:#FFF;letter-spacing:1px;font-size:18px;color:#35333D}.ma-capsule i{height:15px;width:1px;background:#EBE9F0}
+.ma-back{position:absolute;left:14px;background:none;border:0;font-size:25px;line-height:30px;color:#756A7E;padding:0 7px}
+.ma-body{position:absolute;inset:76px 0 0;overflow:hidden;background:transparent}
+.ma-page{height:calc(100% - 73px);padding:28px 19px;overflow-y:auto;background:transparent}
+.ma-greeting{padding:25px 3px 31px}.ma-kicker{display:block;color:#9D95A7;font-size:13px;margin-bottom:13px}.ma-title{font-size:23px;font-weight:500;line-height:1.6;margin:0;color:#4F465A;letter-spacing:-.5px}
+.ma-primary{width:100%;height:49px;display:flex;align-items:center;justify-content:center;border:0;border-radius:26px;background:#81728F;color:#FFF;font-size:15px;letter-spacing:1px}
+.ma-section{display:block;margin:28px 0 10px;color:#9993A3;font-size:12px}.ma-list-row{width:100%;min-height:68px;padding:17px;display:flex;align-items:center;gap:12px;border:0;text-align:left;background:#FFF;border-radius:13px;color:#504557;font-size:15px}
+.ma-icon{display:inline-block;width:22px;height:22px;flex-shrink:0;color:#9C8AA7}.ma-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.ma-row-main{flex:1;min-width:0}.ma-description{display:block;font-size:12px;color:#9993A3;margin-top:5px;line-height:1.6}.ma-chevron{color:#B6AFBF;font-size:23px}
+.ma-tabbar{position:absolute;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,1fr);height:73px;padding:8px 0 18px;background:rgba(251,251,253,.72);backdrop-filter:blur(12px);border-top:1px solid #EEEBF2;z-index:80}
+.ma-tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;justify-content:center;color:#93929C;background:none;border:0;font-size:11px}.ma-tabbar button.active{color:#746786}.ma-tabbar .ma-icon{color:inherit;width:23px;height:23px}
+.ma-tabs{display:flex;justify-content:space-between;border-bottom:1px solid #EFEDF3;margin:-14px -3px 18px}.ma-tabs button{position:relative;padding:18px 12px;background:none;border:0;color:#92909B;font-size:15px}.ma-tabs button.active{color:#746786}.ma-tabs button.active::after{content:'';position:absolute;bottom:0;width:21px;height:2px;background:#8D7D9A;border-radius:2px;left:50%;transform:translateX(-50%)}
+.ma-empty{text-align:center;padding:78px 8px;color:#A39BAF;font-size:14px;line-height:2}.ma-empty .ma-icon{display:block;width:40px;height:40px;margin:0 auto 18px;color:#C8BED2}
+.ma-identity{display:flex;align-items:center;gap:15px;margin:14px 0 28px}.ma-avatar{width:55px;height:55px;border-radius:50%;display:grid;place-items:center;background:#F0EDF5}.ma-avatar .ma-icon{width:28px;height:28px}.ma-name{font-size:21px}.ma-settings{border-radius:14px;background:#FFF;overflow:hidden}.ma-settings .ma-list-row{border-radius:0;border-bottom:1px solid #F2EFF5}
+.ma-splash{position:absolute;inset:0;height:100%;min-height:0;z-index:110}
+.ma-phone:has(#splash:not([hidden])) .ma-status,.ma-phone:has(#splash:not([hidden])) .ma-header{background:transparent}
+.ma-phone:has(#splash:not([hidden])) .ma-body{visibility:hidden}
+.ml-root.letter-overlay{position:absolute;inset:0;height:100%;min-height:0;width:100%;z-index:100}
+.ml-scene{transform:translate(-50%,-50%) scale(.66)!important}.ml-halo{width:92%;left:50%;top:51%}.ml-topline{top:23px;font-size:10px;letter-spacing:.23em}
+.letter-paper{height:78%;max-height:calc(100% - 48px);width:calc(var(--ma-rpx) * 640);max-width:88%;}
+.letter-scroll{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#D8CEE5 transparent;-webkit-overflow-scrolling:touch}.letter-scroll:focus{outline:none}.letter-scroll:focus-visible{outline:1px solid #D8CEE5;outline-offset:-1px}
+.letter-paragraph{margin-top:0;font-weight:400}.is-reading [data-animation-only]{display:none}.letter-body .continue-letter,.letter-body .back-letter{display:block;padding:0;border:0}
+.ma-arrival-paper{position:fixed;z-index:150;pointer-events:none;margin:0!important;animation:none!important;max-width:none;max-height:none;transform-origin:center center;}
+.ma-letter-placed{animation:ma-letter-placed 1.3s ease-out}.ma-placed-note{font-size:12px;color:#9C8AA7;margin:14px 6px;line-height:1.7}
+@keyframes ma-letter-placed{0%{box-shadow:0 0 0 0 #C7B3D06B;background:#F5EEF8}60%{box-shadow:0 0 0 9px #C7B3D000}100%{box-shadow:none;background:#FFF}}
+.ma-dialog-layer{position:absolute;inset:0;background:#81728F22;display:grid;place-items:center;z-index:200;padding:30px}.ma-dialog{width:100%;padding:25px;background:#FFF;border-radius:18px;color:#756A7E;box-shadow:0 15px 60px #81728F20}.ma-dialog h2{font-size:18px;text-align:center;font-weight:500;color:#504557;margin:0 0 18px}.ma-dialog p{font-size:14px;line-height:1.8;margin:0 0 23px}.ma-dialog button{width:100%;border:0;background:#81728F;color:#FFF;padding:11px;border-radius:22px}
+@media(max-width:480px){body{background:#EDF1F9}.preview-toolbar{margin-top:10px;margin-bottom:10px}.ma-phone{height:calc(100dvh - 56px);min-height:450px;border-radius:0;margin-bottom:0;box-shadow:none}.preview-label{font-size:12px}.preview-tools button{font-size:11px;padding:6px 9px}}
+@media(prefers-reduced-motion:reduce){.ma-letter-placed,.ma-phone{animation:none}}
+</style>
+</head>
+<body>
+<div class="preview-toolbar"><span class="preview-label">Make Again · 登录页预览</span><div class="preview-tools"><button id="replay" type="button">重播开场</button><button id="directLetter" type="button">直接拆信</button></div></div>
+<main class="ma-phone" id="phone">
+  <div class="ma-status" aria-hidden="true"><span id="clock">09:41</span><span class="ma-status-icons">▂▄▆ · ▰</span></div>
+  <header class="ma-header"><button type="button" class="ma-back" id="navBack" aria-label="返回" hidden>‹</button><span id="navTitle">Make Again</span><div class="ma-capsule" aria-hidden="true"><span>···</span><i></i><span>◎</span></div></header>
+  <div class="ma-body" id="appBody">
+    <section id="home" class="ma-page">
+      <div class="ma-greeting"><span class="ma-kicker">此刻</span><h1 class="ma-title">一切，都可以慢慢来。</h1></div>
+      <button type="button" class="ma-primary" data-page="chat">写下此刻</button>
+      <span class="ma-section">留给自己的</span>
+      <button type="button" class="ma-list-row" data-open-letter><span class="ma-icon" data-icon="mail"></span><span class="ma-row-main">主创的信</span><span class="ma-chevron">›</span></button>
+    </section>
+    <section id="collection" class="ma-page" hidden>
+      <div class="ma-tabs" role="tablist" aria-label="收藏分类"><button role="tab" type="button" class="active" aria-selected="true" data-kind="letters">信件</button><button role="tab" type="button" aria-selected="false" data-kind="items">物品</button><button role="tab" type="button" aria-selected="false" data-kind="photos">照片</button><button role="tab" type="button" aria-selected="false" data-kind="memories">记忆</button></div>
+      <button type="button" class="ma-list-row" id="letterCard" data-open-letter><span class="ma-icon" data-icon="mail"></span><span class="ma-row-main">主创的信<span class="ma-description">来自 Make Again 主创团队</span></span><span class="ma-chevron">›</span></button>
+      <p class="ma-placed-note" id="placedNote" role="status" hidden>信已放好，随时可以回来读。</p>
+      <div class="ma-empty" id="emptyCollection" hidden><span class="ma-icon" data-icon="collection"></span>暂无收藏</div>
+    </section>
+    <section id="chat" class="ma-page" hidden><div class="ma-greeting"><span class="ma-kicker">此刻</span><h1 class="ma-title">写下此刻</h1></div><p class="ma-description">可以先写一点想说的话。</p><textarea aria-label="想说的话" placeholder="今天，你想从哪里说起？" style="width:100%;height:180px;margin-top:20px;padding:16px;border:1px solid #E8E1EE;border-radius:14px;background:#FFF;color:#756A7E;font:inherit;resize:vertical"></textarea></section>
+    <section id="profile" class="ma-page" hidden>
+      <div class="ma-identity"><div class="ma-avatar"><span class="ma-icon" data-icon="profile"></span></div><div><span class="ma-name">游客</span><span class="ma-description">欢迎来到这里</span></div></div>
+      <div class="ma-settings"><button type="button" class="ma-list-row" data-open-letter><span class="ma-icon" data-icon="mail"></span><span class="ma-row-main">主创的信</span><span class="ma-chevron">›</span></button><button type="button" class="ma-list-row" id="privacyButton"><span class="ma-icon" data-icon="lock"></span><span class="ma-row-main">隐私说明</span><span class="ma-chevron">›</span></button><button type="button" class="ma-list-row" id="wechatButton"><span class="ma-icon" data-icon="login"></span><span class="ma-row-main">微信登录</span><span class="ma-chevron">›</span></button></div>
+    </section>
+    <nav class="ma-tabbar" id="tabbar" aria-label="主导航"><button type="button" data-page="home" class="active"><span class="ma-icon" data-icon="home"></span>首页</button><button type="button" data-page="chat"><span class="ma-icon" data-icon="chat"></span>聊天</button><button type="button" data-page="collection"><span class="ma-icon" data-icon="collection"></span>收藏</button><button type="button" data-page="profile"><span class="ma-icon" data-icon="profile"></span>我的</button></nav>
+    <div id="letterMount" hidden></div>
+    <div class="ma-dialog-layer" id="dialogLayer" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" hidden><div class="ma-dialog"><h2 id="dialogTitle"></h2><p id="dialogContent"></p><button id="dialogClose" type="button">知道了</button></div></div>
+  </div>
+  <!-- LOGIN_TEMPLATE -->
+</main>
+<p style="margin:0 auto 18px;padding:0 16px;max-width:480px;text-align:center;font-size:12px;line-height:1.6;color:#9993A3">HTML 演示点击后的页面流程；微信登录凭证需在小程序内获取，账号后台待接入。</p>
+<template id="letterTemplate"><!-- LETTER_TEMPLATE --></template>
+<script>
+(() => {
+  'use strict';
+  const get = id => document.getElementById(id);
+  const phone = get('phone'), mount = get('letterMount'), tabbar = get('tabbar');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let currentPage = 'home', letterReturn = 'home', firstLetter = true, busy = false, timers = [], arrival = null, loginPending = false;
+  const later = (callback, delay) => { const timer = setTimeout(callback, delay); timers.push(timer); return timer; };
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; if (arrival) { arrival.cancel(); arrival = null; } phone.querySelectorAll('.ma-arrival-paper').forEach(node => node.remove()); }
+  const iconPaths = {
+    home: '<path d="M3 10 12 3l9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/>',
+    chat: '<path d="M4 4h16v13H9l-5 4Z"/><path d="M8 9h8M8 13h5"/>',
+    collection: '<path d="M5 3h14v18l-7-4-7 4Z"/>',
+    profile: '<circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3Z"/>',
+    mail: '<rect x="2" y="4" width="20" height="16" rx="1"/><path d="m2 5 10 8L22 5"/>',
+    lock: '<rect x="4" y="10" width="16" height="12" rx="2"/><path d="M7 10V6a5 5 0 0 1 10 0v4M12 15v3"/>',
+    login: '<path d="M14 3h6v18h-6M2 12h13m-4-4 4 4-4 4"/>'
+  };
+  document.querySelectorAll('[data-icon]').forEach(node => { node.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + iconPaths[node.dataset.icon] + '</svg>'; });
+  get('clock').textContent = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+  function selectCollection(kind) {
+    document.querySelectorAll('[data-kind]').forEach(button => { const active = button.dataset.kind === kind; button.classList.toggle('active', active); button.setAttribute('aria-selected', String(active)); });
+    get('letterCard').hidden = kind !== 'letters'; get('emptyCollection').hidden = kind === 'letters'; get('placedNote').hidden = true;
+  }
+  function setPage(page) {
+    currentPage = page;
+    ['home', 'chat', 'collection', 'profile'].forEach(id => { get(id).hidden = id !== page; });
+    tabbar.querySelectorAll('[data-page]').forEach(button => button.classList.toggle('active', button.dataset.page === page));
+    get('navTitle').textContent = 'Make Again'; get('navBack').hidden = true;
+    get(page).scrollTop = 0;
+  }
+  function closeLetter() {
+    if (busy) return;
+    clearTimers(); mount.hidden = true; mount.innerHTML = ''; tabbar.hidden = false; setPage(letterReturn);
+  }
+  function openLetter(first = false) {
+    clearTimers(); busy = false; firstLetter = first; letterReturn = currentPage;
+    get('splash').hidden = true; tabbar.hidden = true; mount.hidden = false;
+    mount.innerHTML = get('letterTemplate').innerHTML;
+    const overlay = get('letterOverlay'), paper = get('letterPaper');
+    get('beginButton').hidden = !first; get('backButton').hidden = first;
+    get('navTitle').textContent = first ? 'Make Again' : '给你的一封信'; get('navBack').hidden = first;
+  }
+  function startOpen() {
+    const overlay = get('letterOverlay'), paper = get('letterPaper');
+    if (overlay.classList.contains('ml-open')) return;
+    overlay.classList.add('ml-open');
+    later(() => {
+      overlay.classList.add('is-reading'); paper.hidden = false;
+      paper.querySelector('.letter-scroll').focus({ preventScroll: true });
+    }, reduceMotion ? 150 : 6250);
+  }
+  function begin() {
+    if (busy || !firstLetter) return;
+    busy = true; const paper = get('letterPaper'), rect = paper.getBoundingClientRect();
+    const ghost = paper.cloneNode(true); ghost.removeAttribute('id'); ghost.removeAttribute('hidden'); ghost.querySelectorAll('[id]').forEach(node => node.removeAttribute('id'));
+    ghost.classList.add('ma-arrival-paper'); ghost.setAttribute('aria-hidden', 'true');
+    Object.assign(ghost.style, { left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px' });
+    clearTimers(); phone.appendChild(ghost); ghost.querySelector('.letter-scroll').scrollTop = paper.querySelector('.letter-scroll').scrollTop;
+    mount.hidden = true; mount.innerHTML = ''; tabbar.hidden = false; setPage('collection'); selectCollection('letters');
+    const card = get('letterCard'), target = card.getBoundingClientRect();
+    const dx = target.left + target.width / 2 - rect.left - rect.width / 2, dy = target.top + target.height / 2 - rect.top - rect.height / 2;
+    arrival = ghost.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + target.width / rect.width + ',' + target.height / rect.height + ')', opacity: .15 }], { duration: reduceMotion ? 1 : 900, easing: 'cubic-bezier(.22,.7,.26,1)', fill: 'forwards' });
+    arrival.onfinish = () => { ghost.remove(); arrival = null; busy = false; card.classList.remove('ma-letter-placed'); void card.offsetWidth; card.classList.add('ma-letter-placed'); get('placedNote').hidden = false; later(() => { get('placedNote').hidden = true; }, 2400); };
+  }
+  function replay() {
+    clearTimers(); busy = false; loginPending = false; mount.hidden = true; mount.innerHTML = ''; get('dialogLayer').hidden = true; setPage('home'); tabbar.hidden = true;
+    get('splash').hidden = false;
+    get('navTitle').textContent = '';
+    get('loginWechatButton').disabled = false; get('loginWechatButton').textContent = '微信登录'; get('loginError').hidden = true;
+    get('splash').querySelectorAll('.brand-word,.motto-text').forEach(node => { node.style.animation = 'none'; void node.offsetWidth; node.style.animation = ''; });
+  }
+  function previewLogin() {
+    if (loginPending) return;
+    loginPending = true; get('loginWechatButton').disabled = true; get('loginWechatButton').textContent = '正在登录';
+    // HTML only demonstrates the flow. The native page calls wx.login instead.
+    later(() => { loginPending = false; setPage('home'); openLetter(true); }, 400);
+  }
+  function dialog(title, text) { get('dialogTitle').textContent = title; get('dialogContent').textContent = text; get('dialogLayer').hidden = false; get('dialogClose').focus(); }
+  document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => { if (!busy) setPage(button.dataset.page); }));
+  document.querySelectorAll('[data-open-letter]').forEach(button => button.addEventListener('click', () => openLetter(false)));
+  document.querySelectorAll('[data-kind]').forEach(button => button.addEventListener('click', () => selectCollection(button.dataset.kind)));
+  mount.addEventListener('click', event => { const button = event.target.closest('[data-letter-action]'); if (!button) return; if (button.dataset.letterAction === 'begin') begin(); if (button.dataset.letterAction === 'goBack') closeLetter(); if (button.dataset.letterAction === 'openLetter') startOpen(); });
+  get('navBack').addEventListener('click', closeLetter);
+  get('replay').addEventListener('click', replay);
+  get('loginWechatButton').addEventListener('click', previewLogin);
+  get('directLetter').addEventListener('click', () => { setPage('home'); openLetter(true); });
+  get('wechatButton').addEventListener('click', () => dialog('微信登录', '微信账号登录尚未开通。你可以继续以游客身份使用，记录会保存在本机。'));
+  get('privacyButton').addEventListener('click', () => dialog('隐私说明', '倾诉与陪伴信息只保存在本机。微信账号服务尚未开通，暂不提供云端同步。'));
+  get('dialogClose').addEventListener('click', () => { get('dialogLayer').hidden = true; get('wechatButton').focus(); });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') { if (!get('dialogLayer').hidden) get('dialogLayer').hidden = true; else if (!mount.hidden && !firstLetter) closeLetter(); } });
+  replay();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<view class="screen login-screen">
+  <view class="login-hero">
+    <view class="brand-name {{animate ? 'brand-animate' : ''}}" aria-label="Make Again"><text class="brand-word">Make</text><text class="brand-word">Again</text></view>
+    <view class="login-motto {{animate ? 'motto-animate' : ''}}"><text class="motto-text">每一次结束，都是新的开始。</text></view>
+  </view>
+  <view class="login-footer">
+    <text wx:if="{{loginError}}" class="login-error" role="alert">{{loginError}}</text>
+    <button class="wechat-login" bindtap="loginWithWechat" loading="{{isLoggingIn}}" disabled="{{isLoggingIn}}" hover-class="wechat-login-hover">{{isLoggingIn ? '正在登录' : '微信登录'}}</button>
+  </view>
+</view>

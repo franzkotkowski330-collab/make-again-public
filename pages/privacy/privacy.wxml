@@ -1,0 +1,7 @@
+<view class="screen privacy-screen">
+  <view class="privacy-section"><text class="section-title">保存的内容</text><text class="body">同意后，将在本机保存游客与旅程标识、文字记录，以及你自愿填写的四类陪伴信息。主创信的已读状态单独保存。</text></view>
+  <view class="privacy-section"><text class="section-title">只在当前设备</text><text class="body">倾诉内容不上传服务器，也不交给 AI 处理。记录不能跨设备同步，不会自动到期删除；清理缓存、卸载或更换设备可能使内容丢失。同一设备的使用者可能看到这些记录。</text></view>
+  <view class="privacy-section"><text class="section-title">由你决定</text><text class="body">不同意时不创建游客或保存倾诉。四类信息均可留空、修改或拒答；选择“暂不分享”并保存，会清除对应字段。清除小程序数据会删除本地内容，目前没有云端备份或账号迁移。</text></view>
+  <view class="privacy-section"><text class="section-title">陪伴与记录</text><text class="body">当前提供文字记录和手动建档，AI 回复尚未接通。Make Again 不提供心理诊断或治疗，主创信里的第一人称来自作者本人。</text></view>
+  <t-button class="back-privacy" theme="default" variant="text" size="large" block bind:tap="goBack">返回</t-button>
+</view>

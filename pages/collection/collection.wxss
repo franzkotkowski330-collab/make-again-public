@@ -1,0 +1,15 @@
+@import '../../assets/fonts/motto.wxss';
+.collection-screen { padding: 20rpx 32rpx 50rpx; }
+.collection-tabs { --td-tabs-item-height: 96rpx; --td-tabs-item-font-size: 28rpx; --td-tabs-track-width: 40rpx; }
+.letter-list { margin-top: 36rpx; }
+.empty-state { padding-top: 160rpx; }
+.letter-arrival { position: fixed; inset: 0; z-index: 90; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+.arriving-paper { width: 640rpx; height: 78vh; max-width: 88vw; max-height: calc(100% - 100rpx); padding: 48rpx 38rpx; border-radius: 10rpx; border: 1rpx solid #E8E1EE; background: radial-gradient(ellipse at 50% 10%, #FFFDFF, #F7F4FA 88%); box-shadow: 0 26rpx 80rpx #81728F20; font-family: 'MAMottoWenKai', 'KaiTi', 'STKaiti', serif; color: #756A7E; text-align: center; transform-origin: center; }
+.arriving-eyebrow { display: block; font-size: 22rpx; color: #9C8AA7; letter-spacing: 5rpx; }
+.arriving-title { display: block; font-size: 42rpx; margin-top: 16rpx; }
+.arriving-emblem { display: block; color: #A58DB5; margin: 24rpx 0 70rpx; }
+.arriving-copy { display: block; font-size: 29rpx; line-height: 2; }
+.arriving-sign { display: block; margin-top: 100rpx; font-size: 27rpx; color: #9C8AA7; }
+.letter-placed { animation: letter-placed 1.3s ease-out; }
+.placed-note { display: block; margin: 24rpx 12rpx; font-size: 23rpx; color: #9c8aa7; }
+@keyframes letter-placed { 0% { box-shadow: 0 0 0 0 #c7b3d06b; background: #f5eef8; } 60% { box-shadow: 0 0 0 18rpx #c7b3d000; } 100% { box-shadow: none; background: #fff; } }

@@ -1,0 +1,43 @@
+{
+  "pages": [
+    "pages/login/login",
+    "pages/home/home",
+    "pages/chat/chat",
+    "pages/collection/collection",
+    "pages/profile/profile",
+    "pages/letter/letter",
+    "pages/profile/edit",
+    "pages/privacy/privacy"
+  ],
+  "window": {
+    "navigationBarTitleText": "Make Again",
+    "navigationBarBackgroundColor": "#F8FAFF",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8FAFF",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#93929C",
+    "selectedColor": "#746786",
+    "backgroundColor": "#F8FAFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/home/home", "text": "首页", "iconPath": "assets/tab-home.png", "selectedIconPath": "assets/tab-home-active.png" },
+      { "pagePath": "pages/chat/chat", "text": "聊天", "iconPath": "assets/tab-chat.png", "selectedIconPath": "assets/tab-chat-active.png" },
+      { "pagePath": "pages/collection/collection", "text": "收藏", "iconPath": "assets/tab-collection.png", "selectedIconPath": "assets/tab-collection-active.png" },
+      { "pagePath": "pages/profile/profile", "text": "我的", "iconPath": "assets/tab-profile.png", "selectedIconPath": "assets/tab-profile-active.png" }
+    ]
+  },
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-cell": "tdesign-miniprogram/cell/cell",
+    "t-cell-group": "tdesign-miniprogram/cell-group/cell-group",
+    "t-tabs": "tdesign-miniprogram/tabs/tabs",
+    "t-tab-panel": "tdesign-miniprogram/tab-panel/tab-panel",
+    "t-icon": "tdesign-miniprogram/icon/icon",
+    "t-empty": "tdesign-miniprogram/empty/empty",
+    "t-dialog": "tdesign-miniprogram/dialog/dialog"
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

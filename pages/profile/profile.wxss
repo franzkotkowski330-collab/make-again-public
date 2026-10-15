@@ -1,0 +1,5 @@
+.profile-screen { padding-top: 28rpx; }
+.identity { display: flex; align-items: center; gap: 28rpx; padding: 40rpx 8rpx 54rpx; }
+.avatar { width: 106rpx; height: 106rpx; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #9588A3; background: linear-gradient(145deg,#EBEFF7,#ECE5F4); }
+.identity-name { display: block; font-size: 36rpx; font-weight: 500; color: #433C4B; }
+.identity-subtitle { display: block; color: #A299AC; font-size: 23rpx; margin-top: 8rpx; }

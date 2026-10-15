@@ -1,0 +1,19 @@
+<view class="chat-screen" style="height: max(180px, calc(100vh - {{keyboardHeight}}px));">
+  <scroll-view wx:if="{{!hasGuest}}" class="consent-scroll" scroll-y><view class="consent-content">
+    <text class="consent-title">开始之前</text>
+    <text class="consent-summary">文字与陪伴信息仅保存在当前设备，清理缓存可能丢失。AI 暂未接通。</text>
+    <view wx:if="{{error}}" class="error spaced">{{error}}</view>
+    <t-button class="privacy-link" theme="primary" variant="text" size="small" bind:tap="readPrivacy">查看隐私说明</t-button>
+    <view class="consent-actions"><t-button class="accept-consent" theme="primary" shape="round" size="large" block bind:tap="acceptConsent" loading="{{saving}}" disabled="{{saving || !!error}}">同意并开始</t-button><t-button class="decline-button" theme="default" variant="text" size="large" block bind:tap="declineConsent">暂不开始</t-button></view>
+  </view></scroll-view>
+  <block wx:else>
+    <view class="chat-top"><text class="chat-name">Make Again</text><text class="chat-status">仅保存文字</text></view>
+    <view wx:if="{{error}}" class="error chat-error">{{error}}</view>
+    <scroll-view class="message-scroll" scroll-y scroll-into-view="{{scrollTarget}}" scroll-with-animation bindtap="blurInput"><view class="message-content">
+      <view wx:if="{{!messages.length}}" class="chat-empty"><text>写一点想说的话。</text></view>
+      <view wx:for="{{messages}}" wx:key="id" class="message-group" id="msg-{{item.id}}"><text class="message-time">{{item.timeLabel}}</text><view class="user-message"><text selectable>{{item.content}}</text></view></view>
+      <view class="scroll-tail"></view>
+    </view></scroll-view>
+    <view class="input-dock" style="padding-bottom: {{keyboardHeight ? '12rpx' : 'max(16rpx, env(safe-area-inset-bottom))'}};"><view class="input-row"><textarea class="chat-input" placeholder="想说些什么…" placeholder-class="input-placeholder" value="{{draft}}" maxlength="2000" auto-height show-confirm-bar="{{false}}" adjust-position="{{false}}" cursor-spacing="20" bindinput="onInput" bindkeyboardheightchange="keyboardChange" disabled="{{saving}}"/><t-button class="send-button" theme="primary" shape="round" size="medium" custom-style="width:110rpx;min-width:0;padding:0;margin:0;" bind:tap="send" disabled="{{!canSend || saving}}" loading="{{saving}}">保存</t-button></view></view>
+  </block>
+</view>

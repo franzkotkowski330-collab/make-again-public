@@ -1,0 +1,6 @@
+.home-screen { padding-top: 28rpx; }
+.home-greeting { padding: 62rpx 6rpx 60rpx; }
+.home-kicker { display: block; color: #9D95A7; font-size: 25rpx; margin-bottom: 22rpx; }
+.home-title { display: block; font-size: 43rpx; font-weight: 500; line-height: 1.6; color: #4F465A; letter-spacing: -1rpx; }
+.home-entry { margin: 6rpx 0 62rpx; }
+.home-entry t-button { --td-button-large-height: 100rpx; }
