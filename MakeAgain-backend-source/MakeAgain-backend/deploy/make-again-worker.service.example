@@ -1,0 +1,25 @@
+[Unit]
+Description=Make Again durable background worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=make-again
+WorkingDirectory=/opt/make-again/backend
+EnvironmentFile=/opt/make-again/backend/.env
+# Put the verified system or private FFmpeg directory on this PATH.
+Environment=PATH=/opt/make-again/runtime/bin:/opt/make-again/backend/venv/bin:/usr/local/bin:/usr/bin:/bin
+ExecStartPre=/opt/make-again/backend/venv/bin/python preflight.py
+# Run recovery once after stopping the former worker; do not run overlapping old workers.
+ExecStartPre=/opt/make-again/backend/venv/bin/python admin_cli.py recover-stopped-worker
+ExecStart=/opt/make-again/backend/venv/bin/python admin_cli.py worker --forever --poll-seconds 3
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=180
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

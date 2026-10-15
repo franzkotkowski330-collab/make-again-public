@@ -1,15 +1,20 @@
 const service = require('../../utils/service')
 const { COLLECTION_TABS } = require('../../utils/constants')
+const { showError } = require('../../utils/ui')
 Page({
-  data: { tabs: COLLECTION_TABS, active: 'letters', items: [], error: '', emptyTitle: '', emptyDescription: '', letterArriving: false, letterPlaced: false, arrivalAnimation: {} },
+  data: { tabs: COLLECTION_TABS, active: 'letters', items: [], error: '', emptyTitle: '', emptyDescription: '', letterArriving: false, letterPlaced: false, arrivalAnimation: {}, showChatGuide: false, openingChat: false },
   onShow() {
     this._active = true
-    const pending = getApp().globalData.pendingLetterArrival
+    const globalData = getApp().globalData
+    const pending = globalData.pendingLetterArrival
     if (pending) {
-      getApp().globalData.pendingLetterArrival = false
+      globalData.pendingLetterArrival = false
+      globalData.pendingChatGuide = true
       this.setData({ active: 'letters', letterArriving: true, letterPlaced: false, arrivalAnimation: {} })
       wx.pageScrollTo({ scrollTop: 0, duration: 0 })
     }
+    this.setData({ showChatGuide: !!globalData.pendingChatGuide })
+    this.syncGuideTabBar()
     this.refresh()
     if (pending) wx.nextTick(() => this.placeLetter())
   },
@@ -20,6 +25,7 @@ Page({
     clearTimeout(this._arrivalTimer)
     clearTimeout(this._placedTimer)
     this.setData({ letterArriving: false, letterPlaced: false })
+    this.syncGuideTabBar()
   },
   placeLetter() {
     if (!this._active) return
@@ -34,10 +40,21 @@ Page({
     })
   },
   finishArrival() {
+    if (!this._active) return
     this.setData({ letterArriving: false, letterPlaced: true })
+    this.syncGuideTabBar()
     this._placedTimer = setTimeout(() => this.setData({ letterPlaced: false }), 2000)
   },
-  selectTab(event) { this.setData({ active: event.detail.value || event.currentTarget.dataset.key }); this.refresh() },
+  blockGuideTouch() {},
+  syncGuideTabBar() {
+    const hidden = !!(this._active && this.data.showChatGuide && !this.data.letterArriving && this.data.active === 'letters')
+    if (hidden === !!this._guideTabBarHidden) return
+    this._guideTabBarHidden = hidden
+    // The spotlight supplies its own navigation while the native tab bar is hidden.
+    const method = hidden ? 'hideTabBar' : 'showTabBar'
+    if (typeof wx[method] === 'function') wx[method]({ animation: false })
+  },
+  selectTab(event) { this.setData({ active: event.detail.value || event.currentTarget.dataset.key }); this.syncGuideTabBar(); this.refresh() },
   refresh() {
     const content = {
       items: ['一些物品，装着一段故事', '物品上传与保存将在后续阶段接入。'],
@@ -50,5 +67,15 @@ Page({
       this.setData({ items: service.listCollection(this.data.active), emptyTitle: empty[0], emptyDescription: empty[1], error: '' })
     } catch (error) { this.setData({ items: [], error: error.message }) }
   },
-  readLetter() { wx.navigateTo({ url: '/pages/letter/letter' }) }
+  readLetter() { wx.navigateTo({ url: '/pages/letter/letter' }) },
+  startChat() {
+    if (this.data.openingChat) return
+    this.setData({ openingChat: true })
+    wx.switchTab({
+      url: '/pages/chat/chat',
+      success: () => { getApp().globalData.pendingChatGuide = false; this.setData({ showChatGuide: false }); this.syncGuideTabBar() },
+      fail: () => showError(new Error('暂时无法打开聊天，请再试一次。')),
+      complete: () => this.setData({ openingChat: false })
+    })
+  }
 })

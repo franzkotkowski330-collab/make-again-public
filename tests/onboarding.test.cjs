@@ -174,3 +174,49 @@ test('pending arrival selects letters even on an existing collection tab and is 
   assert.equal(instance.data.letterArriving, false)
   assert.equal(placements, 1)
 })
+
+test('spotlight waits for letter placement and restores native navigation when leaving', () => {
+  const app = { globalData: { pendingLetterArrival: true } }, navigation = []
+  const { instance } = load('pages/collection/collection.js', {
+    app, wx: { pageScrollTo() {}, nextTick: callback => callback(), hideTabBar: () => navigation.push('hide'), showTabBar: () => navigation.push('show') }
+  })
+  instance.refresh = () => {}
+  instance.placeLetter = () => {}
+  instance.onShow()
+  assert.equal(instance.data.showChatGuide, true)
+  assert.deepEqual(navigation, [], 'The real tab bar stays visible while the letter lands')
+  instance.finishArrival()
+  assert.deepEqual(navigation, ['hide'])
+  instance.onHide()
+  assert.deepEqual(navigation, ['hide', 'show'])
+  instance.onShow()
+  assert.deepEqual(navigation, ['hide', 'show', 'hide'], 'An unfinished invitation returns with the page')
+  instance.onUnload()
+  assert.deepEqual(navigation, ['hide', 'show', 'hide', 'show'])
+})
+
+test('spotlight chat navigation prevents duplicate taps, retries failures and restores tabs after success', () => {
+  const app = { globalData: { pendingChatGuide: true } }, routes = [], navigation = [], errors = []
+  const { instance } = load('pages/collection/collection.js', {
+    app, require: module => module.endsWith('/ui') ? { showError: error => errors.push(error.message) } : require(path.resolve(__dirname, '../pages/collection', module)),
+    wx: { hideTabBar: () => navigation.push('hide'), showTabBar: () => navigation.push('show'), switchTab: options => routes.push(options) }
+  })
+  instance.refresh = () => {}
+  instance.onShow()
+  instance.startChat()
+  instance.startChat()
+  assert.equal(routes.length, 1)
+  assert.equal(routes[0].url, '/pages/chat/chat')
+  routes[0].fail(); routes[0].complete()
+  assert.equal(errors.length, 1)
+  assert.equal(instance.data.openingChat, false)
+  assert.equal(app.globalData.pendingChatGuide, true)
+  assert.deepEqual(navigation, ['hide'], 'Failed navigation keeps the spotlight available')
+  instance.startChat()
+  routes[1].success(); routes[1].complete()
+  assert.equal(instance.data.showChatGuide, false)
+  assert.equal(app.globalData.pendingChatGuide, false)
+  assert.deepEqual(navigation, ['hide', 'show'])
+  instance.onHide(); instance.onShow()
+  assert.equal(instance.data.showChatGuide, false, 'Completed invitations stay completed')
+})

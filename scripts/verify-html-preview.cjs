@@ -28,6 +28,18 @@ async function screenshot(file) {
   const result = await cdp('Page.captureScreenshot', { format: 'png' })
   fs.writeFileSync(path.join(output, file), Buffer.from(result.data, 'base64'))
 }
+async function checkSelectedTab(page) {
+  const spotlight = await evaluate("document.getElementById('phone').classList.contains('ma-chat-onboarding')")
+  const tabs = await evaluate(`Array.from(document.querySelectorAll('#tabbar [data-page]')).map(button => ({
+    page: button.dataset.page, active: button.classList.contains('active'), current: button.getAttribute('aria-current'),
+    color: getComputedStyle(button).color, selectedIconVisible: button.querySelector('.ma-tab-selected').offsetParent !== null
+  }))`)
+  assert.deepEqual(tabs.filter(tab => tab.active).map(tab => tab.page), [page], 'Only the current page is highlighted')
+  assert.deepEqual(tabs.filter(tab => tab.current === 'page').map(tab => tab.page), [page])
+  assert.deepEqual(tabs.filter(tab => tab.selectedIconVisible).map(tab => tab.page), [page], 'Only the current page shows the highlighted icon')
+  assert.equal(tabs.find(tab => tab.active).color, 'rgb(102, 82, 115)')
+  for (const tab of tabs.filter(tab => !tab.active)) assert.equal(tab.color, spotlight && tab.page === 'chat' ? 'rgb(113, 94, 128)' : 'rgb(158, 152, 166)')
+}
 ;(async () => {
   let tabs
   for (let attempt = 0; attempt < 40; attempt++) {
@@ -123,11 +135,69 @@ async function screenshot(file) {
   assert.equal(buttonFonts[0].glyphCount, 4, 'All four button glyphs must be embedded')
   await screenshot('05-letter-bottom.png')
   await evaluate("document.getElementById('beginButton').click(); true")
-  await wait(1100)
+  await wait(100)
+  await checkSelectedTab('collection')
+  assert.equal(await evaluate("document.getElementById('chatGuide').hidden"), true, 'Chat guide waits for letter placement')
+  await wait(1000)
   assert.equal(await evaluate("document.getElementById('collection').hidden"), false)
   assert.equal(await evaluate("document.getElementById('placedNote').hidden"), false)
   assert.equal(await evaluate("document.querySelectorAll('.ma-arrival-paper').length"), 0)
+  assert.equal(await evaluate("document.getElementById('chatGuide').hidden"), false)
   await screenshot('06-letter-placed.png')
+  await wait(2600)
+  assert.equal(await evaluate("document.getElementById('chatGuide').hidden"), false, 'Chat guide stays available after the temporary placement hint')
+  assert.equal(await evaluate("document.getElementById('phone').classList.contains('ma-chat-onboarding')"), true)
+  assert.equal(await evaluate("document.getElementById('collection').inert"), true)
+  assert.equal(await evaluate("document.querySelector('.chat-guide-pointer').getAnimations().length"), 1)
+  assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('#tabbar button:disabled')).map(button => button.dataset.page)"), ['home', 'collection', 'profile'])
+  for (const page of ['home', 'profile']) {
+    await evaluate(`document.querySelector('#tabbar [data-page="${page}"]').click(); true`)
+    await checkSelectedTab('collection')
+  }
+  await evaluate("document.getElementById('letterCard').click(); document.querySelector('[data-kind=photos]').click(); true")
+  assert.equal(await evaluate("document.getElementById('letterMount').hidden"), true, 'The spotlight blocks reading the letter behind it')
+  assert.equal(await evaluate("document.getElementById('letterCard').hidden"), false, 'The spotlight blocks changing collection categories')
+  const guideLayouts = []
+  for (const [width, height] of [[320, 568], [360, 800], [390, 844], [430, 932], [1000, 700]]) {
+    await cdp('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 500 })
+    await wait(80)
+    const layout = await evaluate(`(() => {
+      const rect = selector => { const r = document.querySelector(selector).getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }; };
+      const phone = rect('#phone'), card = rect('.chat-guide'), button = rect('#chatGuideButton'), tab = rect('#tabbar [data-page=chat]'), pointer = rect('.chat-guide-pointer');
+      const target = document.elementFromPoint((tab.left + tab.right) / 2, (tab.top + tab.bottom) / 2);
+      const background = document.elementFromPoint(phone.left + 15, phone.top + 110);
+      return { width: innerWidth, height: innerHeight, phone, card, button, tab, pointer,
+        chatReceivesTap: target.closest('[data-page=chat]') !== null, backgroundBlocked: background.classList.contains('chat-guide-scrim'),
+        noOverflow: document.documentElement.scrollWidth <= innerWidth && document.querySelector('.chat-guide').scrollWidth <= document.querySelector('.chat-guide').clientWidth };
+    })()`)
+    assert.ok(layout.noOverflow, JSON.stringify(layout))
+    assert.ok(layout.card.left >= layout.phone.left && layout.card.right <= layout.phone.right, JSON.stringify(layout))
+    assert.ok(layout.card.top >= layout.phone.top && layout.button.bottom < layout.tab.top, JSON.stringify(layout))
+    assert.ok(layout.pointer.bottom < layout.tab.top + 8, 'The arrow must point toward the chat entrance')
+    assert.ok(layout.chatReceivesTap && layout.backgroundBlocked, JSON.stringify(layout))
+    guideLayouts.push(layout)
+    await screenshot('06-spotlight-' + width + '.png')
+  }
+  await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
+  await cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] })
+  assert.equal(await evaluate("document.querySelector('.chat-guide-pointer').getAnimations().length"), 0, 'Reduced motion stops the arrow')
+  await cdp('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] })
+  await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab' })
+  assert.equal(await evaluate("document.activeElement.dataset.page"), 'chat', 'Keyboard focus stays on the chat entrance')
+  await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab' })
+  assert.equal(await evaluate("document.activeElement.id"), 'chatGuideButton')
+  await evaluate("document.getElementById('chatGuideButton').click(); true")
+  assert.equal(await evaluate("document.getElementById('chat').hidden"), false)
+  assert.equal(await evaluate("document.querySelectorAll('#tabbar button:disabled').length"), 0, 'Navigation unlocks after entering chat')
+  await checkSelectedTab('chat')
+  await screenshot('08-guided-chat.png')
+  for (const page of ['home', 'profile', 'collection']) {
+    await evaluate(`document.querySelector('#tabbar [data-page="${page}"]').click(); true`)
+    await checkSelectedTab(page)
+  }
+  await evaluate("document.querySelector('#tabbar [data-page=collection]').click(); true")
+  await checkSelectedTab('collection')
+  assert.equal(await evaluate("document.getElementById('chatGuide').hidden"), true, 'The guide is complete after entering chat')
   await evaluate("document.getElementById('letterCard').click(); true")
   await wait(700)
   await evaluate("document.querySelector('#letterMount .ml-envelope').click(); true")
@@ -144,8 +214,18 @@ async function screenshot(file) {
   await wait(200)
   assert.equal(await evaluate("document.documentElement.scrollWidth<=innerWidth"), true)
   await screenshot('07-mobile-letter.png')
+  await evaluate("document.querySelector('.letter-scroll').scrollTop=99999; document.getElementById('beginButton').click(); true")
+  await wait(1500)
+  assert.equal(await evaluate("document.getElementById('chatGuide').hidden"), false)
+  // Hit the real highlighted tab through the compositor, rather than calling its handler directly.
+  const chatTarget = await evaluate("(() => { const r=document.querySelector('#tabbar [data-page=chat]').getBoundingClientRect(); return { x:r.left+r.width/2,y:r.top+r.height/2 }; })()")
+  await cdp('Input.dispatchMouseEvent', { type: 'mousePressed', button: 'left', clickCount: 1, ...chatTarget })
+  await cdp('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount: 1, ...chatTarget })
+  assert.equal(await evaluate("document.getElementById('chat').hidden"), false, 'The highlighted tab also opens chat')
+  assert.equal(await evaluate("document.getElementById('chatGuide').hidden"), true)
+  await checkSelectedTab('chat')
   assert.equal(exceptions.length, 0, JSON.stringify(exceptions))
-  fs.writeFileSync(path.join(output, 'verification.json'), JSON.stringify({ layouts, buttonFonts, titleOnlyDuringOpening: true, readingStartsWithSalutation: true, runtimeExceptions: exceptions.length, loginRequiresClick: true, envelopeRequiresTap: true, loginPreviewUsesSimulatedNavigation: true }, null, 2))
-  console.log('PASS: offline HTML, manual login, unclipped Parisienne ink at 320/360/390/430px, reduced motion, tap-to-open envelope, animation-only title, salutation-first letter, four embedded button glyphs, archive animation, re-read and profile login dialog.')
+  fs.writeFileSync(path.join(output, 'verification.json'), JSON.stringify({ layouts, guideLayouts, buttonFonts, activeTabFollowsPage: true, chatGuideAfterPlacement: true, spotlightBlocksBackground: true, spotlightBothChatEntrances: true, spotlightReducedMotion: true, chatGuidePersistsUntilChat: true, titleOnlyDuringOpening: true, readingStartsWithSalutation: true, runtimeExceptions: exceptions.length, loginRequiresClick: true, envelopeRequiresTap: true, loginPreviewUsesSimulatedNavigation: true }, null, 2))
+  console.log('PASS: offline HTML, manual login, responsive fonts, envelope and letter flow, archive animation, four-page tab highlighting, responsive spotlight, blocked background, keyboard focus, reduced motion, both chat entrances, re-read and profile login dialog.')
   console.log('Screenshots:', output)
 })().catch(error => { console.error(error); process.exitCode = 1 }).finally(() => { if (socket) socket.close(); browser.kill() })

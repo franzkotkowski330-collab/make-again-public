@@ -4,6 +4,7 @@ Page({
   data: { hasGuest: false, messages: [], draft: '', canSend: false, saving: false, scrollTarget: '', chatHeight: 600, keyboardHeight: 0, error: '' },
   onShow() {
     this._active = true
+    getApp().globalData.pendingChatGuide = false
     const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync()
     this._viewportHeight = info.windowHeight
     this.setData({ chatHeight: info.windowHeight, keyboardHeight: 0 })

@@ -2,7 +2,25 @@
   <t-tabs class="collection-tabs" value="{{active}}" theme="line" split="{{false}}" bind:change="selectTab"><t-tab-panel wx:for="{{tabs}}" wx:key="key" label="{{item.label}}" value="{{item.key}}"/></t-tabs>
   <view wx:if="{{error}}" class="error spaced">{{error}}</view>
   <view wx:if="{{active === 'letters'}}" class="surface letter-list {{letterPlaced ? 'letter-placed' : ''}}"><t-cell class="letter-card" wx:for="{{items}}" wx:key="id" title="主创的信" description="{{item.subtitle}}" left-icon="mail" arrow hover bind:click="readLetter"/></view>
-  <text wx:if="{{letterPlaced && active === 'letters'}}" class="placed-note">信已放好，随时可以回来读。</text>
   <view wx:else class="empty-state"><t-empty icon="bookmark" description="暂无收藏"/></view>
+  <text wx:if="{{letterPlaced && active === 'letters'}}" class="placed-note">信已放好，随时可以回来读。</text>
+</view>
+<view wx:if="{{showChatGuide && !letterArriving && active === 'letters'}}" class="chat-onboarding" catchtouchmove="blockGuideTouch">
+  <view class="chat-guide-scrim" catchtap="blockGuideTouch"></view>
+  <!-- CHAT_GUIDE_START -->
+  <view class="chat-guide">
+    <view class="chat-guide-top"><text class="chat-guide-kicker">OUR FIRST CONVERSATION</text><text class="chat-guide-sparkle" aria-hidden="true">✳</text></view>
+    <view class="chat-guide-title" id="chatGuideTitle"><text class="chat-guide-line">先聊聊，</text><text class="chat-guide-line">让我认识你。</text></view>
+    <view class="chat-guide-copy" id="chatGuideDescription"><text class="chat-guide-line">不必认真作答，也没有标准答案。</text><text class="chat-guide-line">从现在的心情开始，慢慢留下属于你的故事。</text></view>
+    <button class="chat-guide-button" bindtap="startChat" loading="{{openingChat}}" disabled="{{openingChat}}">开启我们的第一次对话<text class="chat-guide-arrow" aria-hidden="true">→</text></button>
+    <text class="chat-guide-pointer" aria-hidden="true">⌄</text>
+  </view>
+  <!-- CHAT_GUIDE_END -->
+  <view class="chat-guide-tabs">
+    <view class="chat-guide-tab chat-guide-tab-muted" aria-hidden="true"><image src="/assets/tab-home.png"/><text>首页</text></view>
+    <button class="chat-guide-tab chat-guide-tab-chat" bindtap="startChat" disabled="{{openingChat}}" aria-label="聊天"><view class="chat-guide-tab-icon"><image src="/assets/tab-chat.png"/></view><text>聊天</text></button>
+    <view class="chat-guide-tab chat-guide-tab-muted chat-guide-tab-current" aria-hidden="true"><image src="/assets/tab-collection-active.png"/><text>收藏</text></view>
+    <view class="chat-guide-tab chat-guide-tab-muted" aria-hidden="true"><image src="/assets/tab-profile.png"/><text>我的</text></view>
+  </view>
 </view>
 <view wx:if="{{letterArriving}}" class="letter-arrival"><view class="arriving-paper" animation="{{arrivalAnimation}}"><text class="arriving-eyebrow">来自主创团队</text><text class="arriving-title">给你的一封信</text><text class="arriving-emblem">✦</text><text class="arriving-copy">每一次结束，都是新的开始。</text><text class="arriving-sign">Make Again 主创团队</text></view></view>

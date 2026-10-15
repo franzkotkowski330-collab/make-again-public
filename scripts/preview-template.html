@@ -26,9 +26,10 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
 .ma-icon{display:inline-block;width:22px;height:22px;flex-shrink:0;color:#9C8AA7}.ma-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .ma-row-main{flex:1;min-width:0}.ma-description{display:block;font-size:12px;color:#9993A3;margin-top:5px;line-height:1.6}.ma-chevron{color:#B6AFBF;font-size:23px}
 .ma-tabbar{position:absolute;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,1fr);height:73px;padding:8px 0 18px;background:rgba(251,251,253,.72);backdrop-filter:blur(12px);border-top:1px solid #EEEBF2;z-index:80}
-.ma-tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;justify-content:center;color:#93929C;background:none;border:0;font-size:11px}.ma-tabbar button.active{color:#746786}.ma-tabbar .ma-icon{color:inherit;width:23px;height:23px}
+.ma-tabbar button{display:flex;flex-direction:column;align-items:center;gap:3px;justify-content:center;color:#9E98A6;background:none;border:0;font-size:11px}.ma-tabbar button.active{color:#665273;font-weight:600}.ma-tabbar .ma-icon{color:inherit;width:28px;height:28px;position:relative}.ma-tab-icon img{position:absolute;inset:0;width:100%;height:100%}.ma-tab-icon .ma-tab-selected,.ma-tabbar button.active .ma-tab-default{display:none}.ma-tabbar button.active .ma-tab-selected{display:block}
 .ma-tabs{display:flex;justify-content:space-between;border-bottom:1px solid #EFEDF3;margin:-14px -3px 18px}.ma-tabs button{position:relative;padding:18px 12px;background:none;border:0;color:#92909B;font-size:15px}.ma-tabs button.active{color:#746786}.ma-tabs button.active::after{content:'';position:absolute;bottom:0;width:21px;height:2px;background:#8D7D9A;border-radius:2px;left:50%;transform:translateX(-50%)}
 .ma-empty{text-align:center;padding:78px 8px;color:#A39BAF;font-size:14px;line-height:2}.ma-empty .ma-icon{display:block;width:40px;height:40px;margin:0 auto 18px;color:#C8BED2}
+.ma-chat-guide-layer{position:absolute;inset:0;pointer-events:none}.ma-chat-guide-layer .chat-guide-scrim{z-index:125;pointer-events:auto}.ma-chat-guide-layer .chat-guide{z-index:130;pointer-events:auto}.ma-phone.ma-chat-onboarding .ma-tabbar{z-index:140;background:#E9E4ED;backdrop-filter:none}.ma-chat-onboarding .ma-tabbar button:disabled{opacity:.4}.ma-chat-onboarding .ma-tabbar [data-page=chat]{position:relative;border-radius:16px;color:#715E80;background:#FFFAFD;transform:translateY(-5px);box-shadow:0 0 0 5px #FFFAFD,0 0 0 12px #E4D3F562,0 10px 25px #67517E50;animation:chat-guide-light .5s ease both}.ma-chat-onboarding .ma-tabbar [data-page=chat] .ma-icon{width:32px;height:32px;padding:2px;border-radius:11px;background:linear-gradient(140deg,#E9DCF6,#D3C2E4)}.ma-chat-onboarding .ma-tabbar [data-page=chat] .ma-tab-icon img{inset:2px;width:28px;height:28px}
 .ma-identity{display:flex;align-items:center;gap:15px;margin:14px 0 28px}.ma-avatar{width:55px;height:55px;border-radius:50%;display:grid;place-items:center;background:#F0EDF5}.ma-avatar .ma-icon{width:28px;height:28px}.ma-name{font-size:21px}.ma-settings{border-radius:14px;background:#FFF;overflow:hidden}.ma-settings .ma-list-row{border-radius:0;border-bottom:1px solid #F2EFF5}
 .ma-splash{position:absolute;inset:0;height:100%;min-height:0;z-index:110}
 .ma-phone:has(#splash:not([hidden])) .ma-status,.ma-phone:has(#splash:not([hidden])) .ma-header{background:transparent}
@@ -43,7 +44,7 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
 @keyframes ma-letter-placed{0%{box-shadow:0 0 0 0 #C7B3D06B;background:#F5EEF8}60%{box-shadow:0 0 0 9px #C7B3D000}100%{box-shadow:none;background:#FFF}}
 .ma-dialog-layer{position:absolute;inset:0;background:#81728F22;display:grid;place-items:center;z-index:200;padding:30px}.ma-dialog{width:100%;padding:25px;background:#FFF;border-radius:18px;color:#756A7E;box-shadow:0 15px 60px #81728F20}.ma-dialog h2{font-size:18px;text-align:center;font-weight:500;color:#504557;margin:0 0 18px}.ma-dialog p{font-size:14px;line-height:1.8;margin:0 0 23px}.ma-dialog button{width:100%;border:0;background:#81728F;color:#FFF;padding:11px;border-radius:22px}
 @media(max-width:480px){body{background:#EDF1F9}.preview-toolbar{margin-top:10px;margin-bottom:10px}.ma-phone{height:calc(100dvh - 56px);min-height:450px;border-radius:0;margin-bottom:0;box-shadow:none}.preview-label{font-size:12px}.preview-tools button{font-size:11px;padding:6px 9px}}
-@media(prefers-reduced-motion:reduce){.ma-letter-placed,.ma-phone{animation:none}}
+@media(prefers-reduced-motion:reduce){.ma-letter-placed,.ma-phone,.ma-chat-onboarding .ma-tabbar [data-page=chat]{animation:none}}
 </style>
 </head>
 <body>
@@ -69,11 +70,15 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
       <div class="ma-identity"><div class="ma-avatar"><span class="ma-icon" data-icon="profile"></span></div><div><span class="ma-name">游客</span><span class="ma-description">欢迎来到这里</span></div></div>
       <div class="ma-settings"><button type="button" class="ma-list-row" data-open-letter><span class="ma-icon" data-icon="mail"></span><span class="ma-row-main">主创的信</span><span class="ma-chevron">›</span></button><button type="button" class="ma-list-row" id="privacyButton"><span class="ma-icon" data-icon="lock"></span><span class="ma-row-main">隐私说明</span><span class="ma-chevron">›</span></button><button type="button" class="ma-list-row" id="wechatButton"><span class="ma-icon" data-icon="login"></span><span class="ma-row-main">微信登录</span><span class="ma-chevron">›</span></button></div>
     </section>
-    <nav class="ma-tabbar" id="tabbar" aria-label="主导航"><button type="button" data-page="home" class="active"><span class="ma-icon" data-icon="home"></span>首页</button><button type="button" data-page="chat"><span class="ma-icon" data-icon="chat"></span>聊天</button><button type="button" data-page="collection"><span class="ma-icon" data-icon="collection"></span>收藏</button><button type="button" data-page="profile"><span class="ma-icon" data-icon="profile"></span>我的</button></nav>
+    <nav class="ma-tabbar" id="tabbar" aria-label="主导航"><button type="button" data-page="home" class="active"><span class="ma-icon" data-tab-icon="home"></span>首页</button><button type="button" data-page="chat"><span class="ma-icon" data-tab-icon="chat"></span>聊天</button><button type="button" data-page="collection"><span class="ma-icon" data-tab-icon="collection"></span>收藏</button><button type="button" data-page="profile"><span class="ma-icon" data-tab-icon="profile"></span>我的</button></nav>
     <div id="letterMount" hidden></div>
     <div class="ma-dialog-layer" id="dialogLayer" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" hidden><div class="ma-dialog"><h2 id="dialogTitle"></h2><p id="dialogContent"></p><button id="dialogClose" type="button">知道了</button></div></div>
   </div>
   <!-- LOGIN_TEMPLATE -->
+  <div class="ma-chat-guide-layer" id="chatGuide" role="dialog" aria-modal="true" aria-labelledby="chatGuideTitle" aria-describedby="chatGuideDescription" aria-owns="tabbar" hidden>
+    <div class="chat-guide-scrim" aria-hidden="true"></div>
+    <!-- CHAT_GUIDE_TEMPLATE -->
+  </div>
 </main>
 <p style="margin:0 auto 18px;padding:0 16px;max-width:480px;text-align:center;font-size:12px;line-height:1.6;color:#9993A3">HTML 演示点击后的页面流程；微信登录凭证需在小程序内获取，账号后台待接入。</p>
 <template id="letterTemplate"><!-- LETTER_TEMPLATE --></template>
@@ -83,7 +88,7 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
   const get = id => document.getElementById(id);
   const phone = get('phone'), mount = get('letterMount'), tabbar = get('tabbar');
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let currentPage = 'home', letterReturn = 'home', firstLetter = true, busy = false, timers = [], arrival = null, loginPending = false;
+  let currentPage = 'home', letterReturn = 'home', firstLetter = true, busy = false, timers = [], arrival = null, loginPending = false, chatGuidePending = false;
   const later = (callback, delay) => { const timer = setTimeout(callback, delay); timers.push(timer); return timer; };
   function clearTimers() { timers.forEach(clearTimeout); timers = []; if (arrival) { arrival.cancel(); arrival = null; } phone.querySelectorAll('.ma-arrival-paper').forEach(node => node.remove()); }
   const iconPaths = {
@@ -97,14 +102,26 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
   };
   document.querySelectorAll('[data-icon]').forEach(node => { node.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + iconPaths[node.dataset.icon] + '</svg>'; });
   get('clock').textContent = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+  function updateChatGuide() {
+    const visible = chatGuidePending && !busy && currentPage === 'collection' && mount.hidden && !get('letterCard').hidden;
+    const wasVisible = !get('chatGuide').hidden;
+    get('chatGuide').hidden = !visible;
+    phone.classList.toggle('ma-chat-onboarding', visible);
+    get('collection').inert = visible; phone.querySelector('.ma-header').inert = visible;
+    tabbar.querySelectorAll('[data-page]').forEach(button => { button.disabled = visible && button.dataset.page !== 'chat'; });
+    if (visible && !wasVisible) get('chatGuideButton').focus({ preventScroll: true });
+  }
   function selectCollection(kind) {
     document.querySelectorAll('[data-kind]').forEach(button => { const active = button.dataset.kind === kind; button.classList.toggle('active', active); button.setAttribute('aria-selected', String(active)); });
     get('letterCard').hidden = kind !== 'letters'; get('emptyCollection').hidden = kind === 'letters'; get('placedNote').hidden = true;
+    updateChatGuide();
   }
   function setPage(page) {
     currentPage = page;
     ['home', 'chat', 'collection', 'profile'].forEach(id => { get(id).hidden = id !== page; });
-    tabbar.querySelectorAll('[data-page]').forEach(button => button.classList.toggle('active', button.dataset.page === page));
+    tabbar.querySelectorAll('[data-page]').forEach(button => { const active = button.dataset.page === page; button.classList.toggle('active', active); if (active) button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current'); });
+    if (page === 'chat') chatGuidePending = false;
+    updateChatGuide();
     get('navTitle').textContent = 'Make Again'; get('navBack').hidden = true;
     get(page).scrollTop = 0;
   }
@@ -119,6 +136,7 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
     const overlay = get('letterOverlay'), paper = get('letterPaper');
     get('beginButton').hidden = !first; get('backButton').hidden = first;
     get('navTitle').textContent = first ? 'Make Again' : '给你的一封信'; get('navBack').hidden = first;
+    updateChatGuide();
   }
   function startOpen() {
     const overlay = get('letterOverlay'), paper = get('letterPaper');
@@ -136,14 +154,14 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
     ghost.classList.add('ma-arrival-paper'); ghost.setAttribute('aria-hidden', 'true');
     Object.assign(ghost.style, { left: rect.left + 'px', top: rect.top + 'px', width: rect.width + 'px', height: rect.height + 'px' });
     clearTimers(); phone.appendChild(ghost); ghost.querySelector('.letter-scroll').scrollTop = paper.querySelector('.letter-scroll').scrollTop;
-    mount.hidden = true; mount.innerHTML = ''; tabbar.hidden = false; setPage('collection'); selectCollection('letters');
+    mount.hidden = true; mount.innerHTML = ''; tabbar.hidden = false; chatGuidePending = true; setPage('collection'); selectCollection('letters');
     const card = get('letterCard'), target = card.getBoundingClientRect();
     const dx = target.left + target.width / 2 - rect.left - rect.width / 2, dy = target.top + target.height / 2 - rect.top - rect.height / 2;
     arrival = ghost.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + target.width / rect.width + ',' + target.height / rect.height + ')', opacity: .15 }], { duration: reduceMotion ? 1 : 900, easing: 'cubic-bezier(.22,.7,.26,1)', fill: 'forwards' });
-    arrival.onfinish = () => { ghost.remove(); arrival = null; busy = false; card.classList.remove('ma-letter-placed'); void card.offsetWidth; card.classList.add('ma-letter-placed'); get('placedNote').hidden = false; later(() => { get('placedNote').hidden = true; }, 2400); };
+    arrival.onfinish = () => { ghost.remove(); arrival = null; busy = false; card.classList.remove('ma-letter-placed'); void card.offsetWidth; card.classList.add('ma-letter-placed'); get('placedNote').hidden = false; updateChatGuide(); later(() => { get('placedNote').hidden = true; }, 2400); };
   }
   function replay() {
-    clearTimers(); busy = false; loginPending = false; mount.hidden = true; mount.innerHTML = ''; get('dialogLayer').hidden = true; setPage('home'); tabbar.hidden = true;
+    clearTimers(); busy = false; loginPending = false; chatGuidePending = false; mount.hidden = true; mount.innerHTML = ''; get('dialogLayer').hidden = true; setPage('home'); tabbar.hidden = true;
     get('splash').hidden = false;
     get('navTitle').textContent = '';
     get('loginWechatButton').disabled = false; get('loginWechatButton').textContent = '微信登录'; get('loginError').hidden = true;
@@ -156,9 +174,9 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
     later(() => { loginPending = false; setPage('home'); openLetter(true); }, 400);
   }
   function dialog(title, text) { get('dialogTitle').textContent = title; get('dialogContent').textContent = text; get('dialogLayer').hidden = false; get('dialogClose').focus(); }
-  document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => { if (!busy) setPage(button.dataset.page); }));
-  document.querySelectorAll('[data-open-letter]').forEach(button => button.addEventListener('click', () => openLetter(false)));
-  document.querySelectorAll('[data-kind]').forEach(button => button.addEventListener('click', () => selectCollection(button.dataset.kind)));
+  document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => { if (!busy && (get('chatGuide').hidden || button.dataset.page === 'chat')) setPage(button.dataset.page); }));
+  document.querySelectorAll('[data-open-letter]').forEach(button => button.addEventListener('click', () => { if (get('chatGuide').hidden) openLetter(false); }));
+  document.querySelectorAll('[data-kind]').forEach(button => button.addEventListener('click', () => { if (get('chatGuide').hidden) selectCollection(button.dataset.kind); }));
   mount.addEventListener('click', event => { const button = event.target.closest('[data-letter-action]'); if (!button) return; if (button.dataset.letterAction === 'begin') begin(); if (button.dataset.letterAction === 'goBack') closeLetter(); if (button.dataset.letterAction === 'openLetter') startOpen(); });
   get('navBack').addEventListener('click', closeLetter);
   get('replay').addEventListener('click', replay);
@@ -167,7 +185,14 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
   get('wechatButton').addEventListener('click', () => dialog('微信登录', '微信账号登录尚未开通。你可以继续以游客身份使用，记录会保存在本机。'));
   get('privacyButton').addEventListener('click', () => dialog('隐私说明', '倾诉与陪伴信息只保存在本机。微信账号服务尚未开通，暂不提供云端同步。'));
   get('dialogClose').addEventListener('click', () => { get('dialogLayer').hidden = true; get('wechatButton').focus(); });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape') { if (!get('dialogLayer').hidden) get('dialogLayer').hidden = true; else if (!mount.hidden && !firstLetter) closeLetter(); } });
+  document.addEventListener('keydown', event => {
+    if (!get('chatGuide').hidden && event.key === 'Tab') {
+      event.preventDefault();
+      const button = get('chatGuideButton'), chatTab = tabbar.querySelector('[data-page=chat]');
+      (document.activeElement === button ? chatTab : button).focus({ preventScroll: true });
+    }
+    if (event.key === 'Escape') { if (!get('dialogLayer').hidden) get('dialogLayer').hidden = true; else if (!mount.hidden && !firstLetter) closeLetter(); }
+  });
   replay();
 })();
 </script>
