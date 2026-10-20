@@ -26,7 +26,7 @@ Page({
     if (!this.data.ready || this.data.saving) return
     this.setData({ saving: true })
     const profile = {}
-    this.data.fields.forEach(field => { profile[field.key] = { value: field.value, declined: field.declined } })
+    this.data.fields.forEach(field => { profile[field.key] = { value: field.value, declined: field.declined, voiceMessageId: field.voiceMessageId } })
     try {
       service.saveProfile(profile); this._dirty = false
       wx.showToast({ title: '已保存到本机', icon: 'success' })

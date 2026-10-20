@@ -38,6 +38,9 @@
     "t-empty": "tdesign-miniprogram/empty/empty",
     "t-dialog": "tdesign-miniprogram/dialog/dialog"
   },
+  "permission": {
+    "scope.record": { "desc": "用于你主动按住说话时录制语音，录音仅保存在本机。" }
+  },
   "lazyCodeLoading": "requiredComponents",
   "sitemapLocation": "sitemap.json"
 }

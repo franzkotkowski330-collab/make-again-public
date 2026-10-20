@@ -1,5 +1,5 @@
 <view class="screen profile-screen">
-  <view class="identity"><view class="avatar"><t-icon name="user" size="42rpx"/></view><view><text class="identity-name">游客</text><text class="identity-subtitle">{{hasGuest ? '本机记录' : '欢迎来到这里'}}</text></view></view>
+  <view class="identity"><view class="avatar"><t-icon name="user" size="42rpx"/></view><view><text class="identity-name">{{nickname || '游客'}}</text><text class="identity-subtitle">{{hasGuest ? '本机记录' : '欢迎来到这里'}}</text></view></view>
   <view wx:if="{{error}}" class="error spaced">{{error}}</view>
   <view class="surface profile-settings">
     <t-cell wx:if="{{hasGuest}}" class="edit-profile" title="陪伴信息" left-icon="user-circle" arrow hover bind:click="editProfile"/>

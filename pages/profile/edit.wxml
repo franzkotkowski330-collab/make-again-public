@@ -1,8 +1,9 @@
 <view class="screen edit-screen"><text class="edit-intro">所有信息均可留空。</text><view wx:if="{{error}}" class="error spaced">{{error}}</view>
   <view class="surface form-section" wx:for="{{fields}}" wx:key="key"><text class="field-title">{{item.label}}</text>
     <picker wx:if="{{item.key === 'lossType'}}" mode="selector" range="{{lossTypes}}" range-key="label" value="{{lossIndex}}" bindchange="changeType" disabled="{{item.declined || saving}}"><view class="picker-input {{item.declined ? 'disabled' : ''}}"><text>{{item.declined ? '暂不分享' : lossTypes[lossIndex].label}}</text><t-icon name="chevron-down" size="28rpx"/></view></picker>
-    <input wx:elif="{{item.key === 'relationship'}}" class="form-input {{item.declined ? 'disabled' : ''}}" value="{{item.value}}" placeholder="称谓或昵称" placeholder-class="form-placeholder" maxlength="{{item.maxLength}}" data-index="{{index}}" bindinput="onInput" disabled="{{item.declined || saving}}"/>
+    <input wx:elif="{{item.maxLength <= 60}}" class="form-input {{item.declined ? 'disabled' : ''}}" value="{{item.value}}" placeholder="{{item.hint}}" placeholder-class="form-placeholder" maxlength="{{item.maxLength}}" data-index="{{index}}" bindinput="onInput" disabled="{{item.declined || saving}}"/>
     <textarea wx:else class="form-textarea {{item.declined ? 'disabled' : ''}}" value="{{item.value}}" placeholder="{{item.key === 'concern' ? '此刻最困扰你的事' : '想怎样被陪伴，或不想谈的话题'}}" placeholder-class="form-placeholder" maxlength="{{item.maxLength}}" data-index="{{index}}" bindinput="onInput" disabled="{{item.declined || saving}}"/>
+    <text wx:if="{{item.voiceMessageId && !item.declined && !item.value}}" class="muted">已通过语音回答，可回聊天中收听；填写文字可替换档案中的语音回答。</text>
     <view class="decline-row"><text>暂不分享</text><switch checked="{{item.declined}}" color="#9C89AE" data-index="{{index}}" bindchange="toggleDecline" disabled="{{saving}}"/></view>
   </view>
   <text class="edit-note">选择暂不分享并保存，将清除该项内容。</text>

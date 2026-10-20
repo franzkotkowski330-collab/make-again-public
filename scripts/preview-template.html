@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<title>Make Again · 登录页预览</title>
+<title>Make Again · 小程序预览</title>
 <style>
 /* EMBEDDED_STYLES */
 *{box-sizing:border-box} [hidden]{display:none!important}
@@ -45,10 +45,11 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
 .ma-dialog-layer{position:absolute;inset:0;background:#81728F22;display:grid;place-items:center;z-index:200;padding:30px}.ma-dialog{width:100%;padding:25px;background:#FFF;border-radius:18px;color:#756A7E;box-shadow:0 15px 60px #81728F20}.ma-dialog h2{font-size:18px;text-align:center;font-weight:500;color:#504557;margin:0 0 18px}.ma-dialog p{font-size:14px;line-height:1.8;margin:0 0 23px}.ma-dialog button{width:100%;border:0;background:#81728F;color:#FFF;padding:11px;border-radius:22px}
 @media(max-width:480px){body{background:#EDF1F9}.preview-toolbar{margin-top:10px;margin-bottom:10px}.ma-phone{height:calc(100dvh - 56px);min-height:450px;border-radius:0;margin-bottom:0;box-shadow:none}.preview-label{font-size:12px}.preview-tools button{font-size:11px;padding:6px 9px}}
 @media(prefers-reduced-motion:reduce){.ma-letter-placed,.ma-phone,.ma-chat-onboarding .ma-tabbar [data-page=chat]{animation:none}}
+#chat.ma-page{padding:0;overflow:hidden}#chat .chat-screen{height:100%!important;font-size:calc(var(--ma-rpx) * 28);line-height:1.65}#chat textarea{box-sizing:border-box;resize:none;outline:none;border:0;font:inherit;font-size:calc(var(--ma-rpx) * 26);line-height:calc(var(--ma-rpx) * 38);height:calc(var(--ma-rpx) * 52);overflow:auto}#chat textarea::placeholder{color:#BAAFC6}#chat .message-scroll,#chat .consent-scroll{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}#chat [data-native-block]{display:contents}#chat t-icon{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;flex-shrink:0}#chat t-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}#chat .chat-primary{font-family:inherit}#chat .message-main{max-width:calc(100% - var(--ma-rpx) * 74)}#chat .from-user .message-main{max-width:80%}.ma-preview-toast{position:absolute;bottom:190px;left:8%;right:8%;z-index:210;background:#655570EB;color:white;font-size:12px;padding:12px 16px;border-radius:14px;text-align:center;pointer-events:none}.ma-preview-profile{position:absolute;inset:0;z-index:190;overflow:auto;background:#F8F7FC;padding:25px 22px 90px;color:#7D6B8C}.ma-preview-profile h2{font-size:21px;font-weight:500}.ma-preview-profile label{display:block;margin-top:22px;font-size:13px}.ma-preview-profile textarea{display:block;width:100%;padding:12px;margin:9px 0;border:1px solid #E5DDEC;border-radius:12px;background:white;color:#7D6B8C;font:inherit;resize:none}.ma-preview-profile .ma-description{font-size:11px}.ma-preview-profile button{border:0;background:#A58DBD;color:#FFF;border-radius:22px;padding:10px 18px;margin-top:18px}.ma-preview-profile select{display:block;width:100%;padding:12px;margin-top:9px;border:1px solid #E5DDEC;border-radius:12px;background:white;color:inherit}.ma-preview-profile input{accent-color:#A58DBD}
 </style>
 </head>
 <body>
-<div class="preview-toolbar"><span class="preview-label">Make Again · 登录页预览</span><div class="preview-tools"><button id="replay" type="button">重播开场</button><button id="directLetter" type="button">直接拆信</button></div></div>
+<div class="preview-toolbar"><span class="preview-label">Make Again · 小程序预览</span><div class="preview-tools"><button id="directChat" type="button">聊天页</button><button id="replay" type="button">重播开场</button><button id="directLetter" type="button">直接拆信</button></div></div>
 <main class="ma-phone" id="phone">
   <div class="ma-status" aria-hidden="true"><span id="clock">09:41</span><span class="ma-status-icons">▂▄▆ · ▰</span></div>
   <header class="ma-header"><button type="button" class="ma-back" id="navBack" aria-label="返回" hidden>‹</button><span id="navTitle">Make Again</span><div class="ma-capsule" aria-hidden="true"><span>···</span><i></i><span>◎</span></div></header>
@@ -65,7 +66,7 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
       <p class="ma-placed-note" id="placedNote" role="status" hidden>信已放好，随时可以回来读。</p>
       <div class="ma-empty" id="emptyCollection" hidden><span class="ma-icon" data-icon="collection"></span>暂无收藏</div>
     </section>
-    <section id="chat" class="ma-page" hidden><div class="ma-greeting"><span class="ma-kicker">此刻</span><h1 class="ma-title">写下此刻</h1></div><p class="ma-description">可以先写一点想说的话。</p><textarea aria-label="想说的话" placeholder="今天，你想从哪里说起？" style="width:100%;height:180px;margin-top:20px;padding:16px;border:1px solid #E8E1EE;border-radius:14px;background:#FFF;color:#756A7E;font:inherit;resize:vertical"></textarea></section>
+    <section id="chat" class="ma-page" aria-label="聊天" hidden></section>
     <section id="profile" class="ma-page" hidden>
       <div class="ma-identity"><div class="ma-avatar"><span class="ma-icon" data-icon="profile"></span></div><div><span class="ma-name">游客</span><span class="ma-description">欢迎来到这里</span></div></div>
       <div class="ma-settings"><button type="button" class="ma-list-row" data-open-letter><span class="ma-icon" data-icon="mail"></span><span class="ma-row-main">主创的信</span><span class="ma-chevron">›</span></button><button type="button" class="ma-list-row" id="privacyButton"><span class="ma-icon" data-icon="lock"></span><span class="ma-row-main">隐私说明</span><span class="ma-chevron">›</span></button><button type="button" class="ma-list-row" id="wechatButton"><span class="ma-icon" data-icon="login"></span><span class="ma-row-main">微信登录</span><span class="ma-chevron">›</span></button></div>
@@ -82,7 +83,9 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
 </main>
 <p style="margin:0 auto 18px;padding:0 16px;max-width:480px;text-align:center;font-size:12px;line-height:1.6;color:#9993A3">HTML 演示点击后的页面流程；微信登录凭证需在小程序内获取，账号后台待接入。</p>
 <template id="letterTemplate"><!-- LETTER_TEMPLATE --></template>
+<!-- CHAT_NATIVE_TEMPLATE -->
 <script>
+/* CHAT_PREVIEW_RUNTIME */
 (() => {
   'use strict';
   const get = id => document.getElementById(id);
@@ -117,6 +120,7 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
     updateChatGuide();
   }
   function setPage(page) {
+    if (currentPage === 'chat' && page !== 'chat') window.maChat.hide();
     currentPage = page;
     ['home', 'chat', 'collection', 'profile'].forEach(id => { get(id).hidden = id !== page; });
     tabbar.querySelectorAll('[data-page]').forEach(button => { const active = button.dataset.page === page; button.classList.toggle('active', active); if (active) button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current'); });
@@ -124,6 +128,7 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
     updateChatGuide();
     get('navTitle').textContent = 'Make Again'; get('navBack').hidden = true;
     get(page).scrollTop = 0;
+    if (page === 'chat') window.maChat.show();
   }
   function closeLetter() {
     if (busy) return;
@@ -182,6 +187,7 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
   get('replay').addEventListener('click', replay);
   get('loginWechatButton').addEventListener('click', previewLogin);
   get('directLetter').addEventListener('click', () => { setPage('home'); openLetter(true); });
+  get('directChat').addEventListener('click', () => { clearTimers(); busy = false; chatGuidePending = false; mount.hidden = true; mount.innerHTML = ''; get('splash').hidden = true; tabbar.hidden = false; setPage('chat'); });
   get('wechatButton').addEventListener('click', () => dialog('微信登录', '微信账号登录尚未开通。你可以继续以游客身份使用，记录会保存在本机。'));
   get('privacyButton').addEventListener('click', () => dialog('隐私说明', '倾诉与陪伴信息只保存在本机。微信账号服务尚未开通，暂不提供云端同步。'));
   get('dialogClose').addEventListener('click', () => { get('dialogLayer').hidden = true; get('wechatButton').focus(); });
@@ -194,6 +200,8 @@ button{font:inherit;cursor:pointer}button:disabled{cursor:default}button:focus-v
     if (event.key === 'Escape') { if (!get('dialogLayer').hidden) get('dialogLayer').hidden = true; else if (!mount.hidden && !firstLetter) closeLetter(); }
   });
   replay();
+  if (location.hash === '#chat') get('directChat').click();
+  window.addEventListener('ma-chat-home', () => setPage('home'));
 })();
 </script>
 </body>

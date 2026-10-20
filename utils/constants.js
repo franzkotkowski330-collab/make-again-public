@@ -9,7 +9,9 @@ const PROFILE_FIELDS = [
   { key: 'lossType', label: '离别类型', hint: '这段旅程与哪一种离别有关', maxLength: 30 },
   { key: 'relationship', label: '关系对象', hint: '可以用称谓或昵称，不需要真实姓名', maxLength: 60 },
   { key: 'concern', label: '当前困扰', hint: '此刻最让你难受的事，可以只写一点点', maxLength: 600 },
-  { key: 'expectation', label: '陪伴期待', hint: '想被倾听，或希望我们怎样相处；也可以写下不想谈的话题', maxLength: 600 }
+  { key: 'expectation', label: '陪伴期待', hint: '想被倾听，或希望我们怎样相处；也可以写下不想谈的话题', maxLength: 600 },
+  { key: 'nickname', label: '我的称呼', hint: '昵称就好，不需要真实姓名', maxLength: 30 },
+  { key: 'lifeStage', label: '生活阶段', hint: '目前的学习、工作或生活状态', maxLength: 60 }
 ]
 const COLLECTION_TABS = [
   { key: 'letters', label: '信件' }, { key: 'items', label: '物品' },

@@ -3,7 +3,7 @@ const path = require('node:path')
 const root = path.resolve(__dirname, '..')
 const read = file => fs.readFileSync(path.join(root, file), 'utf8')
 const escape = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]))
-const css = value => value.replace(/^@import[^;]+;\s*/gm, '').replace(/(-?\d*\.?\d+)rpx\b/g, (_, number) => `calc(var(--ma-rpx) * ${number})`)
+const css = value => value.replace(/^@import[^;]+;\s*/gm, '').replace(/>\s*view\b/g, '> div').replace(/(-?\d*\.?\d+)rpx\b/g, (_, number) => `calc(var(--ma-rpx) * ${number})`)
 let component
 global.Component = definition => { component = definition }
 require('../components/author-letter/author-letter')
@@ -41,8 +41,12 @@ let chatGuide = read('pages/collection/collection.wxml').match(/<!-- CHAT_GUIDE_
 chatGuide = chatGuide.replace('bindtap="startChat"', 'id="chatGuideButton" type="button" data-page="chat"').replace(/\s+(?:loading|disabled)="[^"]*"/g, '')
 chatGuide = chatGuide.replace(/<\/?view\b/g, tag => tag.startsWith('</') ? '</div' : '<div').replace(/<\/?text\b/g, tag => tag.startsWith('</') ? '</span' : '<span')
 if (/\{\{|wx:|bindtap/.test(chatGuide)) throw new Error('Unresolved chat guide binding')
-const styles = [read('assets/fonts/brand.wxss'), read('assets/fonts/motto.wxss'), css(read('components/author-letter/author-letter.wxss')), css(read('pages/login/login.wxss')), css(read('pages/collection/collection.wxss'))].join('\n')
+const styles = [read('assets/fonts/brand.wxss'), read('assets/fonts/motto.wxss'), css(read('components/author-letter/author-letter.wxss')), css(read('pages/login/login.wxss')), css(read('pages/collection/collection.wxss')), css(read('pages/chat/chat.wxss').replace(/^page\s*\{[^}]*\}/, ''))].join('\n')
+const chatModules = ['utils/storage.js', 'utils/constants.js', 'utils/chat-guide.js', 'utils/local-service.js', 'utils/service.js', 'utils/ui.js', 'pages/chat/chat.js']
+const chatBundle = 'window.__maChatSources = ' + JSON.stringify(Object.fromEntries(chatModules.map(file => [file, read(file)]))).replace(/</g, '\\u003c') + ';\n' + read('scripts/chat-preview.js')
 const html = read('scripts/preview-template.html').replace('/* EMBEDDED_STYLES */', () => styles).replace('<!-- LETTER_TEMPLATE -->', () => letter).replace('<!-- LOGIN_TEMPLATE -->', () => login).replace('<!-- CHAT_GUIDE_TEMPLATE -->', () => chatGuide)
+  .replace('<!-- CHAT_NATIVE_TEMPLATE -->', () => '<template id="chatNativeTemplate">' + read('pages/chat/chat.wxml').replace(/<(textarea|t-icon)\b([^>]*?)\/>/g, '<$1$2></$1>') + '</template>')
+  .replace('/* CHAT_PREVIEW_RUNTIME */', () => chatBundle)
   .replace(/<span class="ma-icon" data-tab-icon="([a-z]+)"><\/span>/g, (_, name) => {
     const icon = suffix => fs.readFileSync(path.join(root, 'assets', `tab-${name}${suffix}.png`)).toString('base64')
     return `<span class="ma-icon ma-tab-icon" aria-hidden="true"><img class="ma-tab-default" alt="" src="data:image/png;base64,${icon('')}"><img class="ma-tab-selected" alt="" src="data:image/png;base64,${icon('-active')}"></span>`

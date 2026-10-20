@@ -21,4 +21,4 @@ function write(state) {
   return state
 }
 function update(mutator) { const state = read(); mutator(state); return write(state) }
-module.exports = { STORAGE_KEY, read, update }
+module.exports = { STORAGE_KEY, read, write, update }
